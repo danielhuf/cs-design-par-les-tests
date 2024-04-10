@@ -1,4 +1,4 @@
-import { CreateGroup } from "../../src/useCases/CreateGroup";
+import { CreateGroup } from "../../src/usecases/CreateGroup";
 
 describe("Create Group Use Case", () => {
     it("should create a group with a name and initial members", () => {
