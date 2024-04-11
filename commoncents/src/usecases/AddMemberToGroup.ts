@@ -13,15 +13,7 @@ export class AddMemberToGroup {
             throw new Error("Group not found");
         }
 
-        if (!memberName.trim()) {
-            throw new Error("Member name cannot be empty");
-        }
-
-        if (group.members.includes(memberName)) {
-            throw new Error("Member already exists in the group");
-        }
-
-        group.members.push(memberName);
+        group.addMember(memberName);
 
         return group;
     }
