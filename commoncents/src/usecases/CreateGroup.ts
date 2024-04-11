@@ -18,6 +18,11 @@ export class CreateGroup {
                 throw new Error("Member name cannot be empty");
             }
         }
+
+        const uniqueMembers = new Set(members);
+        if (uniqueMembers.size !== members.length) {
+            throw new Error("Members cannot have the same name");
+        }
         
         const id = Math.random().toString(36).substring(2, 9);
         const group = new Group(id, name, members);
