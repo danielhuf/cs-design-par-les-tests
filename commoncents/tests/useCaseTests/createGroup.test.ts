@@ -25,6 +25,6 @@ describe("Create Group Use Case", () => {
         const groupName = "";
         const members = ["Alice", "Bob"];
 
-        expect(() => createGroup.execute(groupName, members)).toThrowError();
+        expect(() => createGroup.execute(groupName, members)).toThrowError("Group name cannot be empty");
     });
 });
