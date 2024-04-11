@@ -10,4 +10,13 @@ describe("Create Group Use Case", () => {
         expect(group.name).toBe(groupName);
         expect(group.members).toEqual(members);
     });
+
+    it("should create a group with a name and no initial members", () => {
+        const createGroup = new CreateGroup();
+        const groupName = "Holiday Trip";
+        const group = createGroup.execute(groupName);
+
+        expect(group.name).toBe(groupName);
+        expect(group.members).toEqual([]);
+    });
 });
