@@ -1,6 +1,13 @@
 import { Group } from "../entities/Group";
+import { IGroupRepository } from "../interfaces/repositories/IGroupRepository"; 
 
 export class CreateGroup {
+    private repository: IGroupRepository;
+
+    constructor(repository: IGroupRepository) {
+        this.repository = repository;
+    }
+
     execute(name: string, members: string[] = []): Group {
         if (!name.trim()) {
             throw new Error("Group name cannot be empty");
@@ -12,6 +19,9 @@ export class CreateGroup {
             }
         }
         
-        return new Group(name, members);
+        const id = Math.random().toString(36).substring(2, 9);
+        const group = new Group(id, name, members);
+        this.repository.addGroup(group);
+        return group;
     }
 }
