@@ -27,4 +27,20 @@ describe("Create Group Use Case", () => {
 
         expect(() => createGroup.execute(groupName, members)).toThrowError("Group name cannot be empty");
     });
+
+    it("should not create a group with a name that only contains whitespace", () => {
+        const createGroup = new CreateGroup();
+        const groupName = "  ";
+        const members = ["Alice", "Bob"];
+
+        expect(() => createGroup.execute(groupName, members)).toThrowError("Group name cannot be empty");
+    });
+
+    it("should not create a group with a member that has an empty name", () => {
+        const createGroup = new CreateGroup();
+        const groupName = "Holiday Trip";
+        const members = ["Alice", ""];
+
+        expect(() => createGroup.execute(groupName, members)).toThrowError("Member name cannot be empty");
+    });
 });
