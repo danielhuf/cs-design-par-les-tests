@@ -54,4 +54,12 @@ describe("Create Group Use Case", () => {
 
         expect(() => createGroup.execute(groupName, members)).toThrow("Member name cannot be empty");
     });
+
+    it("should not create a group with members that have the same name", () => {
+        const createGroup = new CreateGroup(groupRepository);
+        const groupName = "Holiday Trip";
+        const members = ["Alice", "Alice"];
+
+        expect(() => createGroup.execute(groupName, members)).toThrow("Members cannot have the same name");
+    });
 });
