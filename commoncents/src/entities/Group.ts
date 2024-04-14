@@ -25,6 +25,6 @@ export class Group {
     }
 
     addExpense(expense: Expense): void {
-        this.expenses = [expense];
+        this.expenses.push(expense);
     }
 }
