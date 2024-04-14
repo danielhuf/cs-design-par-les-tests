@@ -1,12 +1,15 @@
+import { Expense } from "./Expense";
 export class Group {
     id: string;
     name: string;
     members: string[];
+    expenses: Expense[];
 
     constructor(id: string, name: string, members: string[] = []) {
         this.id = id;
         this.name = name;
         this.members = members;
+        this.expenses = [];
     }
 
     addMember(memberName: string): void {
@@ -19,5 +22,9 @@ export class Group {
         }
 
         this.members.push(memberName);
+    }
+
+    addExpense(expense: Expense): void {
+        this.expenses = [expense];
     }
 }

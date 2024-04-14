@@ -23,9 +23,6 @@ describe("Member Adds Expense To Group Use Case", () => {
       const groupName = "Holiday Trip";
       const members = ["Alice", "Bob"];
       const group = createGroup.execute(groupName, members);
-      addMemberToGroup = new AddMemberToGroup(groupRepository);
-      addMemberToGroup.execute(group.id, "Alice");
-      addMemberToGroup.execute(group.id, "Bob");
 
       const title = "Dinner";
       const amount = 50;
