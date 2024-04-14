@@ -52,6 +52,9 @@ export class MemberAddsExpenseToGroup {
         throw new Error("Split members are not members of the group");
       }
     }
+    if (Object.values(splitPercentages).reduce((a:number, b:number) => a + b, 0) !== 100) {
+      throw new Error("Split percentages do not add up to 100%");
+    }
   }
 
 }
