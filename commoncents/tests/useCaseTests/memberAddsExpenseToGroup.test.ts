@@ -86,4 +86,40 @@ describe("Member Adds Expense To Group Use Case", () => {
       expect(updatedGroup.expenses[1].date).toBe(date2);
       expect(updatedGroup.expenses[1].splitPercentages).toEqual(splitPercentages2);
     });
+
+    it("should throw an error when adding an expense to a non-existent group", () => {
+      // Arrange
+      const nonExistentGroupId = "fake-id";
+      const title = "Dinner";
+      const amount = 50;
+      const payer = "Alice";
+      const date = new Date();
+      const splitPercentages = {
+        "Alice": 50,
+        "Bob": 50
+      };
+
+      // Act & Assert
+      expect(() => memberAddsExpenseToGroup.execute(nonExistentGroupId, title, amount, payer, date, splitPercentages)).toThrow("Group not found");
+    });
+
+    it("should throw an error if the title is empty", () => {
+      // Arrange
+      const groupName = "Holiday Trip";
+      const members = ["Alice", "Bob"];
+      const group = createGroup.execute(groupName, members);
+
+      const emptyTitle = "";
+      const amount = 50;
+      const payer = "Alice";
+      const date = new Date();
+      const splitPercentages = {
+        "Alice": 50,
+        "Bob": 50
+      };
+
+      // Act & Assert
+      expect(() => memberAddsExpenseToGroup.execute(group.id, emptyTitle, amount, payer, date, splitPercentages)).toThrow("Expense title cannot be empty");
+    });
+    
 });
