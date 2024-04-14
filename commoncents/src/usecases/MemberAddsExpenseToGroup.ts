@@ -1,4 +1,5 @@
 import { Expense } from "../entities/Expense";
+import { Member } from "../entities/Member";
 import { IGroupRepository } from "../interfaces/repositories/IGroupRepository"; 
 
 export class MemberAddsExpenseToGroup {
@@ -9,18 +10,18 @@ export class MemberAddsExpenseToGroup {
     this.repository = groupRepository;
   }
 
-  execute(groupId: string, title: string, amount: number, payer: string, date: Date, splitPercentages: { [key: string]: number }) {
+  execute(groupId: string, title: string, amount: number, payerName: string, date: Date, splitPercentages: { [key: string]: number }) {
     const group = this.repository.findGroup(groupId);
     if (!group) {
       throw new Error("Group not found");
     }
     this.validateExpenseTitle(title);
     this.validateExpenseAmount(amount);
-    this.validateGroupMembers(group.members, payer);
+    this.validateGroupMembers(group.members, payerName);
     this.validateSplitPercentages(group.members, splitPercentages);
     this.validateExpenseDate(date);
 
-    const expense = new Expense(title, amount, payer, date, splitPercentages);
+    const expense = new Expense(title, amount, payerName, date, splitPercentages);
     group.addExpense(expense);
     return group;
   }
@@ -39,17 +40,17 @@ export class MemberAddsExpenseToGroup {
     }
   }
 
-  private validateGroupMembers(groupMembers: string[], payer: string): void {
+  private validateGroupMembers(groupMembers: Member[], payerName: string): void {
     if (Object.keys(groupMembers).length === 0) {
       throw new Error("Group has no members");
-    } else if (!groupMembers.includes(payer)) {
+    } else if (!groupMembers.some(member => member.name === payerName)) {
       throw new Error("Payer is not a member of the group");
     }
   }
 
-  private validateSplitPercentages(groupMembers: string[], splitPercentages: { [key: string]: number }): void {
+  private validateSplitPercentages(groupMembers: Member[], splitPercentages: { [key: string]: number }): void {
     for (const member in splitPercentages) {
-      if (!groupMembers.includes(member)) {
+      if (!groupMembers.some(groupMember => groupMember.name === member)) {
         throw new Error("Split members are not members of the group");
       }
     }

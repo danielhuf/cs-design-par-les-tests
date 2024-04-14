@@ -1,4 +1,5 @@
 import { Group } from "../entities/Group";
+import { Member } from "../entities/Member";
 import { IGroupRepository } from "../interfaces/repositories/IGroupRepository"; 
 import { v4 as uuidv4 } from 'uuid';
 
@@ -9,7 +10,7 @@ export class CreateGroup {
         this.repository = repository;
     }
 
-    execute(name: string, members: string[] = []): Group {
+    execute(name: string, members: Member[] = []): Group {
         this.validateGroupName(name);
         this.validateMemberNames(members);
         this.ensureUniqueMemberNames(members);
@@ -26,16 +27,16 @@ export class CreateGroup {
         }
     }
 
-    private validateMemberNames(members: string[]): void {
+    private validateMemberNames(members: Member[]): void {
         for (const member of members) {
-            if (!member.trim()) {
+            if (!member.name.trim()) {
                 throw new Error("Member name cannot be empty");
             }
         }
     }
 
-    private ensureUniqueMemberNames(members: string[]): void {
-        const uniqueMembers = new Set(members);
+    private ensureUniqueMemberNames(members: Member[]): void {
+        const uniqueMembers = new Set(members.map(member => member.name));
         if (uniqueMembers.size !== members.length) {
             throw new Error("Members cannot have the same name");
         }

@@ -1,27 +1,20 @@
 import { Expense } from "./Expense";
+import { Member } from "./Member";
 export class Group {
     id: string;
     name: string;
-    members: string[];
+    members: Member[];
     expenses: Expense[];
 
-    constructor(id: string, name: string, members: string[] = []) {
+    constructor(id: string, name: string, members: Member[] = []) {
         this.id = id;
         this.name = name;
         this.members = members;
         this.expenses = [];
     }
 
-    addMember(memberName: string): void {
-        if (!memberName.trim()) {
-            throw new Error("Member name cannot be empty");
-        }
-
-        if (this.members.includes(memberName)) {
-            throw new Error("Member already exists in the group");
-        }
-
-        this.members.push(memberName);
+    addMember(member: Member): void {
+        this.members.push(member);
     }
 
     addExpense(expense: Expense): void {

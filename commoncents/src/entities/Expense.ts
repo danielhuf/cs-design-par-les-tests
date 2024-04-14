@@ -2,14 +2,14 @@ export class Expense {
 
     title: string;
     amount: number;
-    payer: string;
+    payerName: string;
     date: Date;
     splitPercentages: { [key: string]: number };
 
-    constructor(title: string, amount: number, payer: string, date: Date, splitPercentages: { [key: string]: number }) {
+    constructor(title: string, amount: number, payerName: string, date: Date, splitPercentages: { [key: string]: number }) {
         this.title = title;
         this.amount = amount;
-        this.payer = payer;
+        this.payerName = payerName;
         this.date = date;
         this.splitPercentages = splitPercentages;
     }

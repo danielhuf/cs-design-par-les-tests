@@ -2,6 +2,7 @@ import { GroupRepository } from "../../src/frameworks/persistence/GroupRepositor
 import { CreateGroup } from "../../src/usecases/CreateGroup";
 import { DeleteGroup } from "../../src/usecases/DeleteGroup";
 import { resetMockDatabase } from "../../src/frameworks/persistence/mockDatabase";
+import { Member } from "../../src/entities/Member";
 
 describe("Delete Group Use Case", () => {
     let groupRepository: GroupRepository;
@@ -17,7 +18,7 @@ describe("Delete Group Use Case", () => {
 
     it("should delete a group by its ID", () => {
         const groupName = "Holiday Trip";
-        const members = ["Alice", "Bob"];
+        const members = [new Member("Alice"), new Member("Bob")];
         const group = createGroup.execute(groupName, members);
 
         const result = deleteGroup.execute(group.id);
