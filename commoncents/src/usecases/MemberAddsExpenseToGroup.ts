@@ -18,6 +18,7 @@ export class MemberAddsExpenseToGroup {
     this.validateExpenseAmount(amount);
     this.validateGroupMembers(group.members, payer);
     this.validateSplitPercentages(group.members, splitPercentages);
+    this.validateExpenseDate(date);
 
     const expense = new Expense(title, amount, payer, date, splitPercentages);
     group.addExpense(expense);
@@ -54,6 +55,12 @@ export class MemberAddsExpenseToGroup {
     }
     if (Object.values(splitPercentages).reduce((a:number, b:number) => a + b, 0) !== 100) {
       throw new Error("Split percentages do not add up to 100%");
+    }
+  }
+
+  private validateExpenseDate(date: Date): void {
+    if (date > new Date()) {
+      throw new Error("Expense date cannot be in the future");
     }
   }
 
