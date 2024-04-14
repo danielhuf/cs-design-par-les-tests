@@ -31,6 +31,8 @@ export class MemberAddsExpenseToGroup {
   private validateExpenseAmount(amount: number): void {
     if (amount < 0) {
       throw new Error("Expense amount cannot be negative");
+    } else if (amount === 0) {
+      throw new Error("Expense amount cannot be zero");
     }
   }
 }
