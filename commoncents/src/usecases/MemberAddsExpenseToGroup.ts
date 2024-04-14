@@ -15,6 +15,8 @@ export class MemberAddsExpenseToGroup {
       throw new Error("Group not found");
     }
     this.validateExpenseTitle(title);
+    this.validateExpenseAmount(amount);
+
     const expense = new Expense(title, amount, payer, date, splitPercentages);
     group.addExpense(expense);
     return group;
@@ -23,6 +25,12 @@ export class MemberAddsExpenseToGroup {
   private validateExpenseTitle(title: string): void {
     if (!title.trim()) {
       throw new Error("Expense title cannot be empty");
+    }
+  }
+
+  private validateExpenseAmount(amount: number): void {
+    if (amount < 0) {
+      throw new Error("Expense amount cannot be negative");
     }
   }
 }
