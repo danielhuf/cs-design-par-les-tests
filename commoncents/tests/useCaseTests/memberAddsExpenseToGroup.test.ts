@@ -141,4 +141,23 @@ describe("Member Adds Expense To Group Use Case", () => {
       expect(() => memberAddsExpenseToGroup.execute(group.id, title, negativeAmount, payer, date, splitPercentages)).toThrow("Expense amount cannot be negative");
     });
 
+    it("should throw an error if the amount is zero", () => {
+      // Arrange
+      const groupName = "Holiday Trip";
+      const members = ["Alice", "Bob"];
+      const group = createGroup.execute(groupName, members);
+
+      const title = "Dinner";
+      const zeroAmount = 0;
+      const payer = "Alice";
+      const date = new Date();
+      const splitPercentages = {
+        "Alice": 50,
+        "Bob": 50
+      };
+
+      // Act & Assert
+      expect(() => memberAddsExpenseToGroup.execute(group.id, title, zeroAmount, payer, date, splitPercentages)).toThrow("Expense amount cannot be negative");
+    });
+
 });
