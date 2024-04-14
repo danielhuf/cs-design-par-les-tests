@@ -160,4 +160,22 @@ describe("Member Adds Expense To Group Use Case", () => {
       expect(() => memberAddsExpenseToGroup.execute(group.id, title, zeroAmount, payer, date, splitPercentages)).toThrow("Expense amount cannot be zero");
     });
 
+    it("should throw an error if the group has no members", () => {
+      // Arrange
+      const groupName = "Holiday Trip";
+      const group = createGroup.execute(groupName);
+
+      const title = "Dinner";
+      const amount = 50;
+      const payer = "Alice";
+      const date = new Date();
+      const splitPercentages = {
+        "Alice": 50,
+        "Bob": 50
+      };
+
+      // Act & Assert
+      expect(() => memberAddsExpenseToGroup.execute(group.id, title, amount, payer, date, splitPercentages)).toThrow("Group has no members");
+    });
+
 });
