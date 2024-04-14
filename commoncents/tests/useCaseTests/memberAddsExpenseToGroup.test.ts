@@ -2,7 +2,6 @@ import { MemberAddsExpenseToGroup } from "../../src/usecases/MemberAddsExpenseTo
 import { GroupRepository } from "../../src/frameworks/persistence/GroupRepository";
 import { CreateGroup } from "../../src/usecases/CreateGroup";
 import { resetMockDatabase } from "../../src/frameworks/persistence/mockDatabase";
-import { AddMemberToGroup } from "../../src/usecases/AddMemberToGroup";
 
 describe("Member Adds Expense To Group Use Case", () => {
 
