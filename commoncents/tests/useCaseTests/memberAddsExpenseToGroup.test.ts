@@ -216,4 +216,23 @@ describe("Member Adds Expense To Group Use Case", () => {
       expect(() => memberAddsExpenseToGroup.execute(group.id, title, amount, payer, date, splitPercentages)).toThrow("Split members are not members of the group");
     });
 
+    it("should throw an error if the percentage split does not add up to 100%", () => {
+      // Arrange
+      const groupName = "Holiday Trip";
+      const members = ["Alice", "Bob"];
+      const group = createGroup.execute(groupName, members);
+
+      const title = "Dinner";
+      const amount = 50;
+      const payer = "Alice";
+      const date = new Date();
+      const splitPercentages = {
+        "Alice": 50,
+        "Bob": 40
+      };
+
+      // Act & Assert
+      expect(() => memberAddsExpenseToGroup.execute(group.id, title, amount, payer, date, splitPercentages)).toThrow("Split percentages do not add up to 100%");
+    });
+
 });
