@@ -121,5 +121,24 @@ describe("Member Adds Expense To Group Use Case", () => {
       // Act & Assert
       expect(() => memberAddsExpenseToGroup.execute(group.id, emptyTitle, amount, payer, date, splitPercentages)).toThrow("Expense title cannot be empty");
     });
-    
+
+    it("should throw an error if the amount is negative", () => {
+      // Arrange
+      const groupName = "Holiday Trip";
+      const members = ["Alice", "Bob"];
+      const group = createGroup.execute(groupName, members);
+
+      const title = "Dinner";
+      const negativeAmount = -50;
+      const payer = "Alice";
+      const date = new Date();
+      const splitPercentages = {
+        "Alice": 50,
+        "Bob": 50
+      };
+
+      // Act & Assert
+      expect(() => memberAddsExpenseToGroup.execute(group.id, title, negativeAmount, payer, date, splitPercentages)).toThrow("Expense amount cannot be negative");
+    });
+
 });
