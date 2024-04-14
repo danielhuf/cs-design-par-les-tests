@@ -17,6 +17,7 @@ export class MemberAddsExpenseToGroup {
     this.validateExpenseTitle(title);
     this.validateExpenseAmount(amount);
     this.validateGroupMembers(group.members, payer);
+    this.validateSplitPercentages(group.members, splitPercentages);
 
     const expense = new Expense(title, amount, payer, date, splitPercentages);
     group.addExpense(expense);
@@ -44,4 +45,13 @@ export class MemberAddsExpenseToGroup {
       throw new Error("Payer is not a member of the group");
     }
   }
+
+  private validateSplitPercentages(groupMembers: string[], splitPercentages: { [key: string]: number }): void {
+    for (const member in splitPercentages) {
+      if (!groupMembers.includes(member)) {
+        throw new Error("Split members are not members of the group");
+      }
+    }
+  }
+
 }
