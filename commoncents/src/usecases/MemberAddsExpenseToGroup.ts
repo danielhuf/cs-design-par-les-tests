@@ -16,6 +16,7 @@ export class MemberAddsExpenseToGroup {
     }
     this.validateExpenseTitle(title);
     this.validateExpenseAmount(amount);
+    this.validateGroupMembers(group.members);
 
     const expense = new Expense(title, amount, payer, date, splitPercentages);
     group.addExpense(expense);
@@ -33,6 +34,12 @@ export class MemberAddsExpenseToGroup {
       throw new Error("Expense amount cannot be negative");
     } else if (amount === 0) {
       throw new Error("Expense amount cannot be zero");
+    }
+  }
+
+  private validateGroupMembers(groupMembers: string[]): void {
+    if (Object.keys(groupMembers).length === 0) {
+      throw new Error("Group has no members");
     }
   }
 }
