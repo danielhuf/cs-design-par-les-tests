@@ -157,7 +157,7 @@ describe("Member Adds Expense To Group Use Case", () => {
       };
 
       // Act & Assert
-      expect(() => memberAddsExpenseToGroup.execute(group.id, title, zeroAmount, payer, date, splitPercentages)).toThrow("Expense amount cannot be negative");
+      expect(() => memberAddsExpenseToGroup.execute(group.id, title, zeroAmount, payer, date, splitPercentages)).toThrow("Expense amount cannot be zero");
     });
 
 });
