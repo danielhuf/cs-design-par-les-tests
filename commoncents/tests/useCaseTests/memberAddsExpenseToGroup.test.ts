@@ -37,13 +37,14 @@ describe("Member Adds Expense To Group Use Case", () => {
       };
       
       // Act
-      const result = memberAddsExpenseToGroup.execute(group.id, title, amount, payer, date, splitPercentages);
+      const updatedGroup = memberAddsExpenseToGroup.execute(group.id, title, amount, payer, date, splitPercentages);
 
       // Assert
-      expect(result.expense.title).toBe(title);
-      expect(result.expense.amount).toBe(amount);
-      expect(result.expense.payer).toBe(payer);
-      expect(result.expense.date).toBe(date);
-      expect(result.expense.splitPercentages).toEqual(splitPercentages);
+      expect(updatedGroup.expenses.length).toBe(1);
+      expect(updatedGroup.expenses[0].title).toBe(title);
+      expect(updatedGroup.expenses[0].amount).toBe(amount);
+      expect(updatedGroup.expenses[0].payer).toBe(payer);
+      expect(updatedGroup.expenses[0].date).toBe(date);
+      expect(updatedGroup.expenses[0].splitPercentages).toEqual(splitPercentages);
     });
 });
