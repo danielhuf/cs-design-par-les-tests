@@ -16,7 +16,7 @@ export class MemberAddsExpenseToGroup {
     }
     this.validateExpenseTitle(title);
     this.validateExpenseAmount(amount);
-    this.validateGroupMembers(group.members);
+    this.validateGroupMembers(group.members, payer);
 
     const expense = new Expense(title, amount, payer, date, splitPercentages);
     group.addExpense(expense);
@@ -37,9 +37,11 @@ export class MemberAddsExpenseToGroup {
     }
   }
 
-  private validateGroupMembers(groupMembers: string[]): void {
+  private validateGroupMembers(groupMembers: string[], payer: string): void {
     if (Object.keys(groupMembers).length === 0) {
       throw new Error("Group has no members");
+    } else if (!groupMembers.includes(payer)) {
+      throw new Error("Payer is not a member of the group");
     }
   }
 }
