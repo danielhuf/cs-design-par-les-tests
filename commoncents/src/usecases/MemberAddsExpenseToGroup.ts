@@ -14,8 +14,15 @@ export class MemberAddsExpenseToGroup {
     if (!group) {
       throw new Error("Group not found");
     }
+    this.validateExpenseTitle(title);
     const expense = new Expense(title, amount, payer, date, splitPercentages);
     group.addExpense(expense);
     return group;
+  }
+
+  private validateExpenseTitle(title: string): void {
+    if (!title.trim()) {
+      throw new Error("Expense title cannot be empty");
+    }
   }
 }
