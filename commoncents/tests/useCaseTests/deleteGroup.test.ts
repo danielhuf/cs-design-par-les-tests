@@ -3,6 +3,7 @@ import { CreateGroup } from "../../src/usecases/CreateGroup";
 import { DeleteGroup } from "../../src/usecases/DeleteGroup";
 import { resetMockDatabase } from "../../src/frameworks/persistence/mockDatabase";
 import { Member } from "../../src/entities/Member";
+import { GroupNotFoundError } from "../../src/errors/GroupErrors";
 
 describe("Delete Group Use Case", () => {
     let groupRepository: GroupRepository;
@@ -27,6 +28,6 @@ describe("Delete Group Use Case", () => {
     });
 
     it("should not delete a group that does not exist", () => {
-        expect(() => deleteGroup.execute("nonexistent_id")).toThrow("Group not found");
+        expect(() => deleteGroup.execute("nonexistent_id")).toThrow(GroupNotFoundError);
     });
 });

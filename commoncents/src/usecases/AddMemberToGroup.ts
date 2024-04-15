@@ -1,5 +1,8 @@
 import { IGroupRepository } from "../interfaces/repositories/IGroupRepository";
 import { Member } from "../entities/Member";
+import { GroupNotFoundError } from "../errors/GroupErrors";
+import { EmptyMemberError, DuplicateMemberError } from "../errors/MemberErrors";
+
 export class AddMemberToGroup {
     private repository: IGroupRepository;
 
@@ -10,7 +13,7 @@ export class AddMemberToGroup {
     execute(groupId: string, memberName: string): any {
         const group = this.repository.findGroup(groupId);
         if (!group) {
-            throw new Error("Group not found");
+            throw new GroupNotFoundError();
         }
         this.validateMemberName(memberName);
         this.validateMemberIsNotAlreadyInGroup(group.members, memberName);
@@ -23,13 +26,13 @@ export class AddMemberToGroup {
 
     private validateMemberName(memberName: string): void {
         if (!memberName.trim()) {
-            throw new Error("Member name cannot be empty");
+            throw new EmptyMemberError();
         }
     }
 
     private validateMemberIsNotAlreadyInGroup(groupMembers: Member[], memberName: string): void {
         if (groupMembers.some(member => member.name === memberName)) {
-            throw new Error("Member already exists in the group");
+            throw new DuplicateMemberError();
         }
     }
 }

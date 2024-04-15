@@ -1,6 +1,7 @@
 import { Expense } from "../entities/Expense";
 import { Member } from "../entities/Member";
 import { IGroupRepository } from "../interfaces/repositories/IGroupRepository"; 
+import { GroupNotFoundError } from "../errors/GroupErrors";
 
 export class MemberAddsExpenseToGroup {
 
@@ -13,7 +14,7 @@ export class MemberAddsExpenseToGroup {
   execute(groupId: string, title: string, amount: number, payerName: string, date: Date, splitPercentages: { [key: string]: number }) {
     const group = this.repository.findGroup(groupId);
     if (!group) {
-      throw new Error("Group not found");
+      throw new GroupNotFoundError();
     }
     this.validateExpenseTitle(title);
     this.validateExpenseAmount(amount);
