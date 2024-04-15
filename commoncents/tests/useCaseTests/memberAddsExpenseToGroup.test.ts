@@ -87,6 +87,59 @@ describe("Member Adds Expense To Group Use Case", () => {
       expect(updatedGroup.expenses[1].splitPercentages).toEqual(splitPercentages2);
     });
 
+    it("should update the total balance when an expense is added", () => {
+      // Arrange
+      const groupName = "Holiday Trip";
+      const members = [new Member("Alice"), new Member("Bob")];
+      const group = createGroup.execute(groupName, members);
+
+      const title1 = "Dinner";
+      const amount1 = 50;
+      const payerName1 = "Alice";
+      const date1 = new Date();
+      const splitPercentages1 = {
+        "Alice": 50,
+        "Bob": 50
+      };
+      
+      // Act
+      const updatedGroup = memberAddsExpenseToGroup.execute(group.id, title1, amount1, payerName1, date1, splitPercentages1);
+
+      // Assert
+      expect(updatedGroup.total_balance).toBe(50);
+    });
+
+    it("should add up all the expenses and update total balance", () => {
+      // Arrange
+      const groupName = "Holiday Trip";
+      const members = [new Member("Alice"), new Member("Bob")];
+      const group = createGroup.execute(groupName, members);
+
+      const title1 = "Dinner";
+      const amount1 = 50;
+      const payerName1 = "Alice";
+      const date1 = new Date();
+      const splitPercentages1 = {
+        "Alice": 50,
+        "Bob": 50
+      };
+      
+      const title2 = "Lunch";
+      const amount2 = 20;
+      const payerName2 = "Bob";
+      const date2 = new Date();
+      const splitPercentages2 = {
+        "Alice": 50,
+        "Bob": 50
+      };
+
+      // Act
+      const updatedGroup = memberAddsExpenseToGroup.execute(group.id, title1, amount1, payerName1, date1, splitPercentages1);
+      memberAddsExpenseToGroup.execute(group.id, title2, amount2, payerName2, date2, splitPercentages2);
+      // Assert
+      expect(updatedGroup.total_balance).toEqual(70);
+    });
+
     it("should throw an error when adding an expense to a non-existent group", () => {
       // Arrange
       const nonExistentGroupId = "fake-id";
