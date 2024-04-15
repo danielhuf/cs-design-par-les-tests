@@ -24,14 +24,20 @@ export class ExpenseValidator {
         }
     }
 
-    static validateSplitPercentages(groupMembers: Member[], splitPercentages: { [key: string]: number }): void {
-        for (const member in splitPercentages) {
+    static validateSplit(groupMembers: Member[], split: { [key: string]: number }, isPercentual: boolean, amount: number): void {
+        for (const member in split) {
             if (!groupMembers.some(groupMember => groupMember.name === member)) {
                 throw new Error("Split members are not members of the group");
             }
         }
-        if (Object.values(splitPercentages).reduce((a, b) => a + b, 0) !== 100) {
-            throw new Error("Split percentages do not add up to 100%");
+        if (isPercentual) {
+            if (Object.values(split).reduce((a, b) => a + b, 0) !== 100) {
+                throw new Error("Split percentages do not add up to 100%");
+            }
+        } else {
+            if (Object.values(split).reduce((a, b) => a + b, 0) !== amount) {
+                throw new Error("Split amounts do not add up to the total amount");
+            }
         }
     }
 

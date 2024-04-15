@@ -10,7 +10,7 @@ export class MemberAddsExpenseToGroup {
       this.repository = groupRepository;
   }
 
-  execute(groupId: string, title: string, amount: number, payerName: string, date: Date, splitPercentages: { [key: string]: number }) {
+  execute(groupId: string, title: string, amount: number, payerName: string, date: Date, isPercentual: boolean, split: { [key: string]: number }) {
       const group = this.repository.findGroup(groupId);
       if (!group) {
           throw new GroupNotFoundError();
@@ -19,10 +19,10 @@ export class MemberAddsExpenseToGroup {
       ExpenseValidator.validateExpenseTitle(title);
       ExpenseValidator.validateExpenseAmount(amount);
       ExpenseValidator.validateGroupMembers(group.members, payerName);
-      ExpenseValidator.validateSplitPercentages(group.members, splitPercentages);
+      ExpenseValidator.validateSplit(group.members, split, isPercentual, amount);
       ExpenseValidator.validateExpenseDate(date);
 
-      const expense = new Expense(title, amount, payerName, date, splitPercentages);
+      const expense = new Expense(title, amount, payerName, date, isPercentual, split);
       group.addExpense(expense);
       return group;
   }
