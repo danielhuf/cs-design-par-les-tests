@@ -1,4 +1,5 @@
 import { IGroupRepository } from "../interfaces/repositories/IGroupRepository"; 
+import { GroupNotFoundError } from "../errors/GroupErrors";
 
 export class DeleteGroup {
     private repository: IGroupRepository;
@@ -9,7 +10,7 @@ export class DeleteGroup {
 
     execute(groupId: string): any {
         if (!this.repository.findGroup(groupId)) {
-            throw new Error("Group not found");
+            throw new GroupNotFoundError();
         }
 
         this.repository.deleteGroup(groupId);

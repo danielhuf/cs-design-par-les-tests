@@ -3,6 +3,8 @@ import { AddMemberToGroup } from "../../src/usecases/AddMemberToGroup";
 import { CreateGroup } from "../../src/usecases/CreateGroup";
 import { resetMockDatabase } from "../../src/frameworks/persistence/mockDatabase";
 import { Member } from "../../src/entities/Member";
+import { GroupNotFoundError } from "../../src/errors/GroupErrors";
+import { EmptyMemberError, DuplicateMemberError } from "../../src/errors/MemberErrors";
 
 describe("Add Member to Group Use Case", () => {
     let groupRepository: GroupRepository;
@@ -28,20 +30,20 @@ describe("Add Member to Group Use Case", () => {
         const nonExistentGroupId = "fake-id";
         const newMember = "Bob";
 
-        expect(() => addMemberToGroup.execute(nonExistentGroupId, newMember)).toThrow("Group not found");
+        expect(() => addMemberToGroup.execute(nonExistentGroupId, newMember)).toThrow(GroupNotFoundError);
     });
 
     it("should throw an error if the member name is empty", () => {
         const group = createGroup.execute("Book Club", [new Member("Alice")]);
         const emptyMemberName = "";
 
-        expect(() => addMemberToGroup.execute(group.id, emptyMemberName)).toThrow("Member name cannot be empty");
+        expect(() => addMemberToGroup.execute(group.id, emptyMemberName)).toThrow(EmptyMemberError);
     });
 
     it("should throw an error if the member already exists in the group", () => {
         const group = createGroup.execute("Book Club", [new Member("Alice")]);
         const duplicateMemberName = "Alice";
 
-        expect(() => addMemberToGroup.execute(group.id, duplicateMemberName)).toThrow("Member already exists in the group");
+        expect(() => addMemberToGroup.execute(group.id, duplicateMemberName)).toThrow(DuplicateMemberError);
     });
 });

@@ -4,6 +4,7 @@ import { AddMemberToGroup } from "../../src/usecases/AddMemberToGroup";
 import { CreateGroup } from "../../src/usecases/CreateGroup";
 import { resetMockDatabase } from "../../src/frameworks/persistence/mockDatabase";
 import { Member } from "../../src/entities/Member";
+import { MemberNotFoundError, GroupNotFoundError } from "../../src/errors/GroupErrors";
 
 describe("Delete Member from Group Use Case", () => {
     let groupRepository: GroupRepository;
@@ -38,11 +39,11 @@ describe("Delete Member from Group Use Case", () => {
 
     it("should throw an error when trying to remove a member who does not exist", () => {
         const group = createGroup.execute("Book Club", [new Member("Alice")]);
-        expect(() => deleteMemberFromGroup.execute(group.id, "Charlie")).toThrow("Member not found");
+        expect(() => deleteMemberFromGroup.execute(group.id, "Charlie")).toThrow(MemberNotFoundError);
     });
 
     it("should throw an error when trying to remove a member from a non-existent group", () => {
         const nonExistentGroupId = "fake-id";
-        expect(() => deleteMemberFromGroup.execute(nonExistentGroupId, "Alice")).toThrow("Group not found");
+        expect(() => deleteMemberFromGroup.execute(nonExistentGroupId, "Alice")).toThrow(GroupNotFoundError);
     });
 });

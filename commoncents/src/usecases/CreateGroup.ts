@@ -2,6 +2,8 @@ import { Group } from "../entities/Group";
 import { Member } from "../entities/Member";
 import { IGroupRepository } from "../interfaces/repositories/IGroupRepository"; 
 import { v4 as uuidv4 } from 'uuid';
+import { EmptyGroupError } from "../errors/GroupErrors";
+import { EmptyMemberError, DuplicateMemberError } from "../errors/MemberErrors";
 
 export class CreateGroup {
     private repository: IGroupRepository;
@@ -23,14 +25,14 @@ export class CreateGroup {
 
     private validateGroupName(name: string): void {
         if (!name.trim()) {
-            throw new Error("Group name cannot be empty");
+            throw new EmptyGroupError();
         }
     }
 
     private validateMemberNames(members: Member[]): void {
         for (const member of members) {
             if (!member.name.trim()) {
-                throw new Error("Member name cannot be empty");
+                throw new EmptyMemberError();
             }
         }
     }
@@ -38,7 +40,7 @@ export class CreateGroup {
     private ensureUniqueMemberNames(members: Member[]): void {
         const uniqueMembers = new Set(members.map(member => member.name));
         if (uniqueMembers.size !== members.length) {
-            throw new Error("Members cannot have the same name");
+            throw new DuplicateMemberError();
         }
     }
 

@@ -1,4 +1,5 @@
 import { IGroupRepository } from "../interfaces/repositories/IGroupRepository";
+import { GroupNotFoundError, MemberNotFoundError } from "../errors/GroupErrors";
 
 export class DeleteMemberFromGroup {
     private repository: IGroupRepository;
@@ -10,11 +11,11 @@ export class DeleteMemberFromGroup {
     execute(groupId: string, memberName: string): void {
         const group = this.repository.findGroup(groupId);
         if (!group) {
-            throw new Error("Group not found");
+            throw new GroupNotFoundError();
         }
         const memberIndex = group.members.findIndex(member => member.name === memberName);
         if (memberIndex === -1) {
-            throw new Error("Member not found");
+            throw new MemberNotFoundError();
         }
         group.members.splice(memberIndex, 1);
     }

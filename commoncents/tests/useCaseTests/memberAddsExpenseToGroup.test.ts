@@ -3,6 +3,7 @@ import { GroupRepository } from "../../src/frameworks/persistence/GroupRepositor
 import { CreateGroup } from "../../src/usecases/CreateGroup";
 import { resetMockDatabase } from "../../src/frameworks/persistence/mockDatabase";
 import { Member } from "../../src/entities/Member";
+import { GroupNotFoundError } from "../../src/errors/GroupErrors";
 
 describe("Member Adds Expense To Group Use Case", () => {
 
@@ -100,7 +101,7 @@ describe("Member Adds Expense To Group Use Case", () => {
       };
 
       // Act & Assert
-      expect(() => memberAddsExpenseToGroup.execute(nonExistentGroupId, title, amount, payerName, date, splitPercentages)).toThrow("Group not found");
+      expect(() => memberAddsExpenseToGroup.execute(nonExistentGroupId, title, amount, payerName, date, splitPercentages)).toThrow(GroupNotFoundError);
     });
 
     it("should throw an error if the title is empty", () => {
