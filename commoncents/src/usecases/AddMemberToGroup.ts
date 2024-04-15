@@ -1,5 +1,6 @@
 import { IGroupRepository } from "../interfaces/repositories/IGroupRepository";
 import { Member } from "../entities/Member";
+
 export class AddMemberToGroup {
     private repository: IGroupRepository;
 
