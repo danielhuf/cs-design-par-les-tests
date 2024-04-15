@@ -2,8 +2,8 @@ import { GroupRepository } from "../../src/frameworks/persistence/GroupRepositor
 import { CreateGroup } from "../../src/usecases/CreateGroup";
 import { DeleteGroup } from "../../src/usecases/DeleteGroup";
 import { resetMockDatabase } from "../../src/frameworks/persistence/mockDatabase";
-import { Member } from "../../src/entities/Member";
-import { GroupNotFoundError } from "../../src/errors/GroupErrors";
+import { Member } from "../../src/domain/entities/Member";
+import { GroupNotFoundError } from "../../src/domain/errors/GroupErrors";
 
 describe("Delete Group Use Case", () => {
     let groupRepository: GroupRepository;

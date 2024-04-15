@@ -1,4 +1,4 @@
-import { Group } from "../../entities/Group";
+import { Group } from "../../domain/entities/Group";
 import { IGroupRepository } from "../../interfaces/repositories/IGroupRepository";
 import { mockDatabase } from "./mockDatabase";
 

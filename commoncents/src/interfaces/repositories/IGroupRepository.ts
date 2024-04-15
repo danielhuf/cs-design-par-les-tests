@@ -1,4 +1,4 @@
-import { Group } from "../../entities/Group";
+import { Group } from "../../domain/entities/Group";
 
 export interface IGroupRepository {
     addGroup(group: Group): void;

@@ -3,8 +3,8 @@ import { DeleteMemberFromGroup } from "../../src/usecases/DeleteMemberFromGroup"
 import { AddMemberToGroup } from "../../src/usecases/AddMemberToGroup";
 import { CreateGroup } from "../../src/usecases/CreateGroup";
 import { resetMockDatabase } from "../../src/frameworks/persistence/mockDatabase";
-import { Member } from "../../src/entities/Member";
-import { MemberNotFoundError, GroupNotFoundError } from "../../src/errors/GroupErrors";
+import { Member } from "../../src/domain/entities/Member";
+import { MemberNotFoundError, GroupNotFoundError } from "../../src/domain/errors/GroupErrors";
 
 describe("Delete Member from Group Use Case", () => {
     let groupRepository: GroupRepository;

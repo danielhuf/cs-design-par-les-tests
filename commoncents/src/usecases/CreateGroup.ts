@@ -1,9 +1,9 @@
-import { Group } from "../entities/Group";
-import { Member } from "../entities/Member";
+import { Group } from "../domain/entities/Group";
+import { Member } from "../domain/entities/Member";
 import { IGroupRepository } from "../interfaces/repositories/IGroupRepository"; 
 import { v4 as uuidv4 } from 'uuid';
-import { EmptyGroupError } from "../errors/GroupErrors";
-import { EmptyMemberError, DuplicateMemberError } from "../errors/MemberErrors";
+import { GroupValidator } from "../domain/validators/GroupValidator";
+import { MemberValidator } from "../domain/validators/MemberValidator";
 
 export class CreateGroup {
     private repository: IGroupRepository;
@@ -13,35 +13,16 @@ export class CreateGroup {
     }
 
     execute(name: string, members: Member[] = []): Group {
-        this.validateGroupName(name);
-        this.validateMemberNames(members);
-        this.ensureUniqueMemberNames(members);
+        GroupValidator.validateGroupName(name);
+        for (const member of members) {
+            MemberValidator.validateMemberName(member.name);
+        }
+        MemberValidator.validateUniqueMemberNames(members);
 
         const id = this.generateId();
         const group = new Group(id, name, members);
         this.repository.addGroup(group);
         return group;
-    }
-
-    private validateGroupName(name: string): void {
-        if (!name.trim()) {
-            throw new EmptyGroupError();
-        }
-    }
-
-    private validateMemberNames(members: Member[]): void {
-        for (const member of members) {
-            if (!member.name.trim()) {
-                throw new EmptyMemberError();
-            }
-        }
-    }
-
-    private ensureUniqueMemberNames(members: Member[]): void {
-        const uniqueMembers = new Set(members.map(member => member.name));
-        if (uniqueMembers.size !== members.length) {
-            throw new DuplicateMemberError();
-        }
     }
 
     private generateId(): string {

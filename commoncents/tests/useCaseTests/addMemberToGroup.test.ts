@@ -2,9 +2,9 @@ import { GroupRepository } from "../../src/frameworks/persistence/GroupRepositor
 import { AddMemberToGroup } from "../../src/usecases/AddMemberToGroup";
 import { CreateGroup } from "../../src/usecases/CreateGroup";
 import { resetMockDatabase } from "../../src/frameworks/persistence/mockDatabase";
-import { Member } from "../../src/entities/Member";
-import { GroupNotFoundError } from "../../src/errors/GroupErrors";
-import { EmptyMemberError, DuplicateMemberError } from "../../src/errors/MemberErrors";
+import { Member } from "../../src/domain/entities/Member";
+import { GroupNotFoundError } from "../../src/domain/errors/GroupErrors";
+import { EmptyMemberError, DuplicateMemberError } from "../../src/domain/errors/MemberErrors";
 
 describe("Add Member to Group Use Case", () => {
     let groupRepository: GroupRepository;

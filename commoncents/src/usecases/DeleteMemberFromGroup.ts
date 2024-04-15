@@ -1,5 +1,5 @@
 import { IGroupRepository } from "../interfaces/repositories/IGroupRepository";
-import { GroupNotFoundError, MemberNotFoundError } from "../errors/GroupErrors";
+import { GroupNotFoundError, MemberNotFoundError } from "../domain/errors/GroupErrors";
 
 export class DeleteMemberFromGroup {
     private repository: IGroupRepository;

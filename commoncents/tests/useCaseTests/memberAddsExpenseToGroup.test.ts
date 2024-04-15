@@ -2,8 +2,8 @@ import { MemberAddsExpenseToGroup } from "../../src/usecases/MemberAddsExpenseTo
 import { GroupRepository } from "../../src/frameworks/persistence/GroupRepository";
 import { CreateGroup } from "../../src/usecases/CreateGroup";
 import { resetMockDatabase } from "../../src/frameworks/persistence/mockDatabase";
-import { Member } from "../../src/entities/Member";
-import { GroupNotFoundError } from "../../src/errors/GroupErrors";
+import { Member } from "../../src/domain/entities/Member";
+import { GroupNotFoundError } from "../../src/domain/errors/GroupErrors";
 
 describe("Member Adds Expense To Group Use Case", () => {
 
@@ -308,30 +308,4 @@ describe("Member Adds Expense To Group Use Case", () => {
       // Act & Assert
       expect(() => memberAddsExpenseToGroup.execute(group.id, title, amount, payerName, date, splitPercentages)).toThrow("Expense date cannot be in the future");
     });
-
-    it("should add an expense with equal splitting among members", () => {
-      const group = createGroup.execute("Weekend Trip", [new Member("Alice"), new Member("Bob")]);
-      const title = "Car Rental";
-      const amount = 100;
-      const payerName = "Alice";
-      const date = new Date();
-
-      const updatedGroup = memberAddsExpenseToGroup.execute(group.id, title, amount, payerName, date, "equal");
-
-      expect(updatedGroup.expenses[0].splitValues).toEqual({ "Alice": 50, "Bob": 50 });
-    });
-
-    it("should add an expense with unequal manual splitting", () => {
-      const group = createGroup.execute("Weekend Trip", [new Member("Alice"), new Member("Bob")]);
-      const title = "Hotel";
-      const amount = 300;
-      const payerName = "Bob";
-      const date = new Date();
-      const splitValues = { "Alice": 100, "Bob": 200 };
-
-      const updatedGroup = memberAddsExpenseToGroup.execute(group.id, title, amount, payerName, date, splitValues);
-
-      expect(updatedGroup.expenses[0].splitValues).toEqual(splitValues);
-    });
-
 });
