@@ -18,7 +18,7 @@ describe("Member Adds Expense To Group Use Case", () => {
       memberAddsExpenseToGroup = new MemberAddsExpenseToGroup(groupRepository);
   });
 
-    it("should add an expense to a group", () => {
+    it("should add an expense to a group with percentuals", () => {
       // Arrange
       const groupName = "Holiday Trip";
       const members = [new Member("Alice"), new Member("Bob")];
@@ -45,7 +45,7 @@ describe("Member Adds Expense To Group Use Case", () => {
       expect(updatedGroup.expenses[0].splitPercentages).toEqual(splitPercentages);
     });
 
-    it("should add two expenses to a group", () => {
+    it("should add two expenses to a group with percentuals", () => {
       // Arrange
       const groupName = "Holiday Trip";
       const members = [new Member("Alice"), new Member("Bob")];
@@ -308,4 +308,30 @@ describe("Member Adds Expense To Group Use Case", () => {
       // Act & Assert
       expect(() => memberAddsExpenseToGroup.execute(group.id, title, amount, payerName, date, splitPercentages)).toThrow("Expense date cannot be in the future");
     });
+
+    it("should add an expense with equal splitting among members", () => {
+      const group = createGroup.execute("Weekend Trip", [new Member("Alice"), new Member("Bob")]);
+      const title = "Car Rental";
+      const amount = 100;
+      const payerName = "Alice";
+      const date = new Date();
+
+      const updatedGroup = memberAddsExpenseToGroup.execute(group.id, title, amount, payerName, date, "equal");
+
+      expect(updatedGroup.expenses[0].splitValues).toEqual({ "Alice": 50, "Bob": 50 });
+    });
+
+    it("should add an expense with unequal manual splitting", () => {
+      const group = createGroup.execute("Weekend Trip", [new Member("Alice"), new Member("Bob")]);
+      const title = "Hotel";
+      const amount = 300;
+      const payerName = "Bob";
+      const date = new Date();
+      const splitValues = { "Alice": 100, "Bob": 200 };
+
+      const updatedGroup = memberAddsExpenseToGroup.execute(group.id, title, amount, payerName, date, splitValues);
+
+      expect(updatedGroup.expenses[0].splitValues).toEqual(splitValues);
+    });
+
 });
