@@ -11,6 +11,10 @@ export class GroupController implements IGroupController {
     }
 
     public async createGroup(req: Request, res: Response): Promise<void> {
+        if (!this.validateBody(req.body)) {
+            res.status(400).json({ message: "Invalid request body" });
+            return;
+        }
         const { name, members } = req.body;
         const membersList = await this.createMembers(members);
         const group = this.createGroupUseCase.execute(name, membersList);
@@ -26,5 +30,9 @@ export class GroupController implements IGroupController {
 
     private async createMembers(members: string[]): Promise<Member[]> {
         return members.map((memberName) => new Member(memberName));
+    }
+
+    private validateBody(body: any): boolean {
+        return body && body.name;
     }
 }
