@@ -39,6 +39,10 @@ export class GroupController implements IGroupController {
     }
 
     private validateBody(body: any): boolean {
-        return body && body.name;
+        if (!body) return false;
+        if (!body.name || typeof body.name !== "string") return false;
+        if (body.members && !Array.isArray(body.members)) return false;
+        if (body.members && body.members.some((member: any) => typeof member !== "string")) return false;
+        return true;
     }
 }
