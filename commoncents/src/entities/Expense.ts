@@ -4,16 +4,13 @@ export class Expense {
     amount: number;
     payerName: string;
     date: Date;
-    isPercentual: boolean;
-    split: { [key: string]: number };
+    splitPercentages: { [key: string]: number };
 
-    constructor(title: string, amount: number, payerName: string, date: Date, isPercentual: boolean, split: { [key: string]: number }) {
+    constructor(title: string, amount: number, payerName: string, date: Date, divideEqually?: boolean, splitPercentages?: { [key: string]: number }) {
         this.title = title;
         this.amount = amount;
         this.payerName = payerName;
         this.date = date;
-        this.isPercentual = isPercentual;
-        this.split = split;
 
         if (divideEqually && splitPercentages) {
             throw new Error("Both dividedEqually and splitPercentages cannot be provided simultaneously.");
