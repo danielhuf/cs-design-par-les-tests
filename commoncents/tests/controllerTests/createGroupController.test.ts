@@ -94,4 +94,33 @@ describe("GroupController", () => {
     expect(mockRes.status).toHaveBeenCalledWith(400);
     expect(mockRes.json).toHaveBeenCalledWith({ message: "Invalid request body" });
   });
+
+  it("createGroup should successfully create a group with no members and return the appropriate response", async () => {
+    // Arrange
+    mockReq.body = { name: "Adventure Club" };
+    
+    const expectedResponse = {
+      id: "1",
+      name: "Adventure Club",
+      members: []
+    };
+
+    jest.spyOn(createGroupUseCase, "execute").mockReturnValue({
+      id: "1",
+      name: "Adventure Club",
+      members: [],
+      expenses: [],
+      total_balance: 0,
+      calculateTotalBalance: jest.fn(),
+      addMember: jest.fn(),
+      addExpense: jest.fn(),
+    });
+
+    // Act
+    await groupController.createGroup(mockReq, mockRes);
+
+    // Assert
+    expect(mockRes.status).toHaveBeenCalledWith(201);
+    expect(mockRes.json).toHaveBeenCalledWith(expectedResponse);
+  });
 });
