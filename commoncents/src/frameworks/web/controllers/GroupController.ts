@@ -2,6 +2,7 @@ import { IGroupController } from "../../../interfaces/controllers/IGroupControll
 import { Request, Response } from "express";
 import { CreateGroup } from "../../../usecases/CreateGroup";
 import { Member } from "../../../domain/entities/Member";
+import { Group } from "../../../domain/entities/Group";
 
 export class GroupController implements IGroupController {
     private createGroupUseCase: CreateGroup;
@@ -16,8 +17,13 @@ export class GroupController implements IGroupController {
             return;
         }
         const { name, members } = req.body;
-        const membersList = await this.createMembers(members);
-        const group = this.createGroupUseCase.execute(name, membersList);
+        let group: Group;
+        if (!members) {
+            group = this.createGroupUseCase.execute(name);
+        } else {
+            const membersList = await this.createMembers(members);
+            group = this.createGroupUseCase.execute(name, membersList);
+        }
         const response = {
             id: group.id,
             name: group.name,
