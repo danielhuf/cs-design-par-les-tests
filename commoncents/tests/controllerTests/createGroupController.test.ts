@@ -123,4 +123,29 @@ describe("GroupController", () => {
     expect(mockRes.status).toHaveBeenCalledWith(201);
     expect(mockRes.json).toHaveBeenCalledWith(expectedResponse);
   });
+
+  it("createGroup should return 400 if members is not an array", async () => {
+    // Arrange
+    mockReq.body = { name: "Adventure Club", members: "Alice" };
+
+    // Act
+    await groupController.createGroup(mockReq, mockRes);
+
+    // Assert
+    expect(mockRes.status).toHaveBeenCalledWith(400);
+    expect(mockRes.json).toHaveBeenCalledWith({ message: "Invalid request body" });
+  });
+
+  it("createGroup should return 400 if members is not an array of strings", async () => {
+    // Arrange
+    mockReq.body = { name: "Adventure Club", members: ["Alice",
+      { name: "Bob" }] };
+    
+    // Act
+    await groupController.createGroup(mockReq, mockRes);
+
+    // Assert
+    expect(mockRes.status).toHaveBeenCalledWith(400);
+    expect(mockRes.json).toHaveBeenCalledWith({ message: "Invalid request body" });
+  });
 });
