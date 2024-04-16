@@ -30,7 +30,7 @@ describe("GroupController", () => {
     clearMockRes();
   });
 
-  test("createGroup should successfully create a group with members and return the appropriate response", async () => {
+  it("createGroup should successfully create a group with members and return the appropriate response", async () => {
     // Arrange
     mockReq.body = { name: "Adventure Club", members: ["Alice", "Bob"] };
     
@@ -57,5 +57,17 @@ describe("GroupController", () => {
     // Assert
     expect(mockRes.status).toHaveBeenCalledWith(201);
     expect(mockRes.json).toHaveBeenCalledWith(expectedResponse);
+  });
+
+  it("createGroup should return 400 if the request body is empty", async () => {
+    // Arrange
+    mockReq.body = {};
+
+    // Act
+    await groupController.createGroup(mockReq, mockRes);
+
+    // Assert
+    expect(mockRes.status).toHaveBeenCalledWith(400);
+    expect(mockRes.json).toHaveBeenCalledWith({ message: "Invalid request body" });
   });
 });
