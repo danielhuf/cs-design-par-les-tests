@@ -1,5 +1,4 @@
-import { Group } from "../../domain/entities/Group";
-
+import { Request, Response } from "express";
 export interface IGroupController {
-  createGroup(groupName: string, memberNames: string[]): Promise<Group>;
+    createGroup(req: Request, res: Response): Promise<void>;
 }

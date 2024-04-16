@@ -1,6 +1,6 @@
 import { IGroupController } from "../../../interfaces/controllers/IGroupController";
+import { Request, Response } from "express";
 import { CreateGroup } from "../../../usecases/CreateGroup";
-import { Group } from "../../../domain/entities/Group";
 import { Member } from "../../../domain/entities/Member";
 
 export class GroupController implements IGroupController {
@@ -10,13 +10,21 @@ export class GroupController implements IGroupController {
         this.createGroupUseCase = createGroupUseCase;
     }
 
-    public async createGroup(groupName: string, memberNames: string[]): Promise<Group> {
-        const members = await this.createMembers(memberNames);
-        return this.createGroupUseCase.execute(groupName, members);
+    public async createGroup(req: Request, res: Response): Promise<void> {
+        const { name, members } = req.body;
+        const membersList = await this.createMembers(members);
+        const group = this.createGroupUseCase.execute(name, membersList);
+        const response = {
+            id: group.id,
+            name: group.name,
+            members: group.members.map(member => ({
+                name: member.name
+            }))
+        };
+        res.status(201).json(response);
     }
 
-    private async createMembers(memberNames: string[]): Promise<Member[]> {
-        return memberNames.map(name => new Member(name));
+    private async createMembers(members: string[]): Promise<Member[]> {
+        return members.map((memberName) => new Member(memberName));
     }
-
 }
