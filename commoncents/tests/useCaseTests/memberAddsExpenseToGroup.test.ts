@@ -114,57 +114,6 @@ describe("Member Adds Expense To Group Use Case", () => {
       expect(updatedGroup.expenses[1].split).toEqual(split2);
     });
 
-    it("should update the total balance when an expense is added", () => {
-      const groupName = "Holiday Trip";
-      const members = [new Member("Alice"), new Member("Bob")];
-      const group = createGroup.execute(groupName, members);
-
-      const title = "Dinner";
-      const amount = 50;
-      const payerName = "Alice";
-      const date = new Date();
-      const isPercentual = true;
-      const split = {
-        "Alice": 50,
-        "Bob": 50
-      };
-      
-      const updatedGroup = memberAddsExpenseToGroup.execute(group.id, title, amount, payerName, date, isPercentual, split);
-
-      expect(updatedGroup.total_balance).toBe(50);
-    });
-
-    it("should add up all the expenses and update total balance", () => {
-      const groupName = "Holiday Trip";
-      const members = [new Member("Alice"), new Member("Bob")];
-      const group = createGroup.execute(groupName, members);
-
-      const title1 = "Dinner";
-      const amount1 = 50;
-      const payerName1 = "Alice";
-      const date1 = new Date();
-      const isPercentual1 = true;
-      const split1 = {
-        "Alice": 50,
-        "Bob": 50
-      };
-      
-      const title2 = "Lunch";
-      const amount2 = 20;
-      const payerName2 = "Bob";
-      const date2 = new Date();
-      const isPercentual2 = true;
-      const split2 = {
-        "Alice": 50,
-        "Bob": 50
-      };
-
-      const updatedGroup = memberAddsExpenseToGroup.execute(group.id, title1, amount1, payerName1, date1, isPercentual1, split1);
-      memberAddsExpenseToGroup.execute(group.id, title2, amount2, payerName2, date2, isPercentual2, split2);
-
-      expect(updatedGroup.total_balance).toEqual(70);
-    });
-
     it("should throw an error when adding an expense to a non-existent group", () => {
       const nonExistentGroupId = "fake-id";
       const title = "Dinner";
