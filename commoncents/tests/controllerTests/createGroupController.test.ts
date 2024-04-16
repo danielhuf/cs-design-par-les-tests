@@ -70,4 +70,28 @@ describe("GroupController", () => {
     expect(mockRes.status).toHaveBeenCalledWith(400);
     expect(mockRes.json).toHaveBeenCalledWith({ message: "Invalid request body" });
   });
+
+  it("createGroup should return 400 if the request body is missing name", async () => {
+    // Arrange
+    mockReq.body = { members: ["Alice", "Bob"] };
+
+    // Act
+    await groupController.createGroup(mockReq, mockRes);
+
+    // Assert
+    expect(mockRes.status).toHaveBeenCalledWith(400);
+    expect(mockRes.json).toHaveBeenCalledWith({ message: "Invalid request body" });
+  });
+
+  it("createGroup should return 400 if the name is empty", async () => {
+    // Arrange
+    mockReq.body = { name: "", members: ["Alice", "Bob"] };
+
+    // Act
+    await groupController.createGroup(mockReq, mockRes);
+
+    // Assert
+    expect(mockRes.status).toHaveBeenCalledWith(400);
+    expect(mockRes.json).toHaveBeenCalledWith({ message: "Invalid request body" });
+  });
 });
