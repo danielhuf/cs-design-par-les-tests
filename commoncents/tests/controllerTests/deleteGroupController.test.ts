@@ -7,42 +7,48 @@ import { Group } from "../../src/domain/entities/Group";
 import { IGroupRepository } from "../../src/interfaces/repositories/IGroupRepository";
 
 describe("GroupController", () => {
-  let mockGroupRepository: jest.Mocked<IGroupRepository>;
-  let deleteGroup: DeleteGroup;
-  let createGroup: CreateGroup;
-  let groupController: GroupController;
-  let req: Request;
-  let res: Response;
+    let mockGroupRepository: jest.Mocked<IGroupRepository>;
+    let deleteGroup: DeleteGroup;
+    let createGroup: CreateGroup;
+    let groupController: GroupController;
+    let req: Request;
+    let res: Response;
 
-  beforeEach(() => {
-      mockGroupRepository = {
-          addGroup: jest.fn(),
-          deleteGroup: jest.fn(),
-          findGroup: jest.fn(),
-      };
-      deleteGroup = new DeleteGroup(mockGroupRepository);
-      createGroup = new CreateGroup(mockGroupRepository);
-      groupController = new GroupController(createGroup, deleteGroup);
-      req = getMockReq({ params: { id: '123' } });
-      res = getMockRes().res;
-  });
+    beforeEach(() => {
+        mockGroupRepository = {
+            addGroup: jest.fn(),
+            deleteGroup: jest.fn(),
+            findGroup: jest.fn(),
+        };
+        deleteGroup = new DeleteGroup(mockGroupRepository);
+        createGroup = new CreateGroup(mockGroupRepository);
+        groupController = new GroupController(createGroup, deleteGroup);
+        req = getMockReq({ params: { id: '123' } });
+        res = getMockRes().res;
+    });
 
-  it("should delete a group successfully and return 200", async () => {
-      mockGroupRepository.deleteGroup.mockReturnValue(true);
-      mockGroupRepository.findGroup.mockReturnValue(new Group('123', 'testGroup', []));
-      await groupController.deleteGroup(req, res);
+    it("should delete a group successfully and return 200", async () => {
+        mockGroupRepository.deleteGroup.mockReturnValue(true);
+        mockGroupRepository.findGroup.mockReturnValue(new Group('123', 'testGroup', []));
+        await groupController.deleteGroup(req, res);
 
-      expect(res.status).toHaveBeenCalledWith(200);
-      expect(res.json).toHaveBeenCalledWith({ success: true });
-  });
+        expect(res.status).toHaveBeenCalledWith(200);
+        expect(res.json).toHaveBeenCalledWith({ success: true });
+    });
 
     it("should return 404 if group is not found", async () => {
         mockGroupRepository.deleteGroup.mockReturnValue(false);
         mockGroupRepository.findGroup.mockReturnValue(undefined);
         await groupController.deleteGroup(req, res);
-    
         expect(res.status).toHaveBeenCalledWith(404);
         expect(res.json).toHaveBeenCalledWith({ message: "Group not found" });
+    });
+
+    it("should return 400 if group id is not provided", async () => {
+        req = getMockReq();
+        await groupController.deleteGroup(req, res);
+        expect(res.status).toHaveBeenCalledWith(400);
+        expect(res.json).toHaveBeenCalledWith({ message: "Group id is required" });
     });
 
 });
