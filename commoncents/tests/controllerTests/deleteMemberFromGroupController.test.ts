@@ -47,4 +47,15 @@ describe("MemberController", () => {
         expect(res.status).toHaveBeenCalledWith(404);
         expect(res.json).toHaveBeenCalledWith({ message: "Group not found" });
     });
+
+    it("should return a 404 status code if the member does not belong to the group", async () => {
+        const memberName = "Alice";
+        const group = new Group("123", "Test Group", [new Member("Bob")]);
+        req.params.member = memberName;
+        mockGroupRepository.findGroup.mockReturnValueOnce(group);
+    
+        await memberController.deleteMemberFromGroup(req, res);
+        expect(res.status).toHaveBeenCalledWith(404);
+        expect(res.json).toHaveBeenCalledWith({ message: "Member not found" });
+    });
 });
