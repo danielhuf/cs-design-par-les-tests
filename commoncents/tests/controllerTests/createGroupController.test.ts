@@ -3,6 +3,9 @@ import { getMockReq, getMockRes } from "@jest-mock/express"
 import { GroupController } from "../../src/frameworks/web/controllers/GroupController";
 import { CreateGroup } from "../../src/usecases/CreateGroup";
 import { IGroupRepository } from "../../src/interfaces/repositories/IGroupRepository";
+import { Group } from "../../src/domain/entities/Group";
+import { Member } from "../../src/domain/entities/Member";
+import { DeleteGroup } from "../../src/usecases/DeleteGroup";
 
 describe("GroupController", () => {
   let createGroupUseCase: CreateGroup;
@@ -19,7 +22,7 @@ describe("GroupController", () => {
     };
 
     createGroupUseCase = new CreateGroup(mockGroupRepository);
-    groupController = new GroupController(createGroupUseCase);
+    groupController = new GroupController(createGroupUseCase, new DeleteGroup(mockGroupRepository));
     mockReq = getMockReq();
     let { res, mockClear } = getMockRes();
     mockRes = res;
@@ -40,16 +43,12 @@ describe("GroupController", () => {
       members: [{ name: "Alice" }, { name: "Bob" }]
     };
 
-    jest.spyOn(createGroupUseCase, "execute").mockReturnValue({
-      id: "1",
-      name: "Adventure Club",
-      members: [{ name: "Alice" }, { name: "Bob" }],
-      expenses: [],
-      total_balance: 0,
-      calculateTotalBalance: jest.fn(),
-      addMember: jest.fn(),
-      addExpense: jest.fn(),
-    });
+    jest.spyOn(createGroupUseCase, "execute").mockReturnValue(
+      new Group("1", "Adventure Club", [
+        new Member("Alice"),
+        new Member("Bob"),
+      ])
+    );
 
     // Act
     await groupController.createGroup(mockReq, mockRes);
@@ -105,16 +104,9 @@ describe("GroupController", () => {
       members: []
     };
 
-    jest.spyOn(createGroupUseCase, "execute").mockReturnValue({
-      id: "1",
-      name: "Adventure Club",
-      members: [],
-      expenses: [],
-      total_balance: 0,
-      calculateTotalBalance: jest.fn(),
-      addMember: jest.fn(),
-      addExpense: jest.fn(),
-    });
+    jest.spyOn(createGroupUseCase, "execute").mockReturnValue(
+      new Group("1", "Adventure Club", [])
+    );
 
     // Act
     await groupController.createGroup(mockReq, mockRes);
