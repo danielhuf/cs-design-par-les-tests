@@ -48,6 +48,7 @@ describe("MemberController", () => {
     
         // Assert
         expect(res.status).toHaveBeenCalledWith(404);
+        expect(res.json).toHaveBeenCalledWith({ message: "Group not found" });
     });
 
     it("should return a 400 status code if the group id is not provided", async () => {
@@ -59,6 +60,7 @@ describe("MemberController", () => {
     
         // Assert
         expect(res.status).toHaveBeenCalledWith(400);
+        expect(res.json).toHaveBeenCalledWith({ message: "Group id is required" });
     });
 
     it("should return a 400 status code if the request body is empty", async () => {
@@ -70,5 +72,6 @@ describe("MemberController", () => {
     
         // Assert
         expect(res.status).toHaveBeenCalledWith(400);
+        expect(res.json).toHaveBeenCalledWith({ message: "Member name is required" });
     });
 });
