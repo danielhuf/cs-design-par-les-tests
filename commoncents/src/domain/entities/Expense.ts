@@ -15,7 +15,7 @@ export class Expense {
         this.isPercentual = isPercentual;
         this.split = split;
 
-        if (divideEqually && splitPercentages) {
+        /*if (divideEqually && splitPercentages) {
             throw new Error("Both dividedEqually and splitPercentages cannot be provided simultaneously.");
         }
 
@@ -25,12 +25,12 @@ export class Expense {
             this.splitPercentages = splitPercentages;
         } else {
             throw new Error("Either dividedEqually or splitPercentages must be provided.");
-        }
+        }*/
     }
 
-    private calculateEqualSplit(): void {
+    /*private calculateEqualSplit(): void {
         this.splitPercentages = {};
         this.splitPercentages[this.payerName] = 100;
-    }
+    }*/
 
 }
