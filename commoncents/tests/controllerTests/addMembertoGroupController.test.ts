@@ -60,4 +60,15 @@ describe("MemberController", () => {
         // Assert
         expect(res.status).toHaveBeenCalledWith(400);
     });
+
+    it("should return a 400 status code if the request body is empty", async () => {
+        // Arrange
+        req.body = {};
+        
+        // Act
+        await memberController.addMemberToGroup(req, res);
+    
+        // Assert
+        expect(res.status).toHaveBeenCalledWith(400);
+    });
 });
