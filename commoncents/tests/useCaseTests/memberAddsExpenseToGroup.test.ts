@@ -272,6 +272,23 @@ describe("Member Adds Expense To Group Use Case", () => {
     expect(() => memberAddsExpenseToGroup.execute(group.id, title, amount, payerName, date, isPercentual, split)).toThrow("Split amounts do not add up to the total amount");
   });
 
+  it("should throw an error if the split concerns less than two members", () => {
+    const groupName = "Holiday Trip";
+    const members = [new Member("Alice"), new Member("Bob")];
+    const group = createGroup.execute(groupName, members);
+
+    const title = "Dinner";
+    const amount = 50;
+    const payerName = "Alice";
+    const date = new Date();
+    const isPercentual = false;
+    const split = {
+      "Alice": 50
+    };
+
+    expect(() => memberAddsExpenseToGroup.execute(group.id, title, amount, payerName, date, isPercentual, split)).toThrow("Split must have at least two members");
+  });
+
   it("should throw an error if the date is in the future", () => {
     const groupName = "Holiday Trip";
     const members = [new Member("Alice"), new Member("Bob")];
@@ -291,6 +308,57 @@ describe("Member Adds Expense To Group Use Case", () => {
     expect(() => memberAddsExpenseToGroup.execute(group.id, title, amount, payerName, date, isPercentual, split)).toThrow("Expense date cannot be in the future");
   });
 
+  it("should update the total balance when an expense is added", () => {
+    const groupName = "Holiday Trip";
+    const members = [new Member("Alice"), new Member("Bob")];
+    const group = createGroup.execute(groupName, members);
+
+    const title = "Dinner";
+    const amount = 50;
+    const payerName = "Alice";
+    const date = new Date();
+    const isPercentual = true;
+    const split = {
+      "Alice": 50,
+      "Bob": 50
+    };
+
+    memberAddsExpenseToGroup.execute(group.id, title, amount, payerName, date, isPercentual, split);
+
+    expect(group.total_balance).toBe(50);
+  });
+
+  it("should add up all the expenses and update total balance", () => {
+    const groupName = "Holiday Trip";
+    const members = [new Member("Alice"), new Member("Bob")];
+    const group = createGroup.execute(groupName, members);
+
+    const title1 = "Dinner";
+    const amount1 = 50;
+    const payerName1 = "Alice";
+    const date1 = new Date();
+    const isPercentual1 = true;
+    const split1 = {
+      "Alice": 60,
+      "Bob": 40
+    };
+
+    const title2 = "Lunch";
+    const amount2 = 20;
+    const payerName2 = "Bob";
+    const date2 = new Date();
+    const isPercentual2 = false;
+    const split2 = {
+      "Alice": 15,
+      "Bob": 5
+    };
+
+    memberAddsExpenseToGroup.execute(group.id, title1, amount1, payerName1, date1, isPercentual1, split1);
+    memberAddsExpenseToGroup.execute(group.id, title2, amount2, payerName2, date2, isPercentual2, split2);
+
+    expect(group.total_balance).toEqual(70);
+  });
+
   it("should update differential balances correctly after adding an expense", () => {
     const groupName = "Trip";
     const members = [new Member("Alice"), new Member("Bob")];
@@ -305,10 +373,35 @@ describe("Member Adds Expense To Group Use Case", () => {
       "Alice": 60,
       "Bob": 40
     };
-    
+
     memberAddsExpenseToGroup.execute(group.id, title, amount, payerName, date, isPercentual, split);
 
-    expect(group.differentialBalances["Alice"]["Bob"]).toBe(-40);
-    expect(group.differentialBalances["Bob"]["Alice"]).toBe(40);
+    expect(group.differentialBalances["Alice"]["Bob"]).toBe(40);
+    expect(group.differentialBalances["Bob"]["Alice"]).toBe(-40);
   });
+
+  it("should update differential balances correctly after adding an expense in percentages", () => {
+    const groupName = "Trip";
+    const members = [new Member("Alice"), new Member("Bob")];
+    const group = createGroup.execute(groupName, members);
+
+    const title = "Lunch";
+    const amount = 20;
+    const payerName = "Alice";
+    const date = new Date();
+    const isPercentual = true;
+    const split = {
+      "Alice": 80,
+      "Bob": 20
+    };
+
+    memberAddsExpenseToGroup.execute(group.id, title, amount, payerName, date, isPercentual, split);
+
+    expect(group.differentialBalances["Alice"]["Bob"]).toBe(4);
+    expect(group.differentialBalances["Bob"]["Alice"]).toBe(-4);
+  });
+
+  // Testar quando o cara que paga nao esta envolvido no split
+  // Fazer o update do negocio diferencial varias vezes, adicionando despesas, novas pessoas, deletando pessoas
+
 });
