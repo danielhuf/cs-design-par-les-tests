@@ -58,4 +58,10 @@ describe("MemberController", () => {
         expect(res.status).toHaveBeenCalledWith(404);
         expect(res.json).toHaveBeenCalledWith({ message: "Member not found" });
     });
+
+    it("should return a 400 status code if the member name is not provided", async () => {    
+        await memberController.deleteMemberFromGroup(req, res);
+        expect(res.status).toHaveBeenCalledWith(400);
+        expect(res.json).toHaveBeenCalledWith({ message: "Member name is required" });
+    });
 });
