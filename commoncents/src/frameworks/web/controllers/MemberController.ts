@@ -17,6 +17,10 @@ export class MemberController {
       return;
     }
     const { name } = req.body;
+    if (!name) {
+      res.status(400).json({ message: "Member name is required" });
+      return;
+    }
     try {
       await this.addMemberToGroupUseCase.execute(id, name);
       res.status(200).json({ success: true });
