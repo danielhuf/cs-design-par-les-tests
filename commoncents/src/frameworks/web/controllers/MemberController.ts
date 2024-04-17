@@ -2,7 +2,7 @@ import { Request, Response } from "express";
 import { AddMemberToGroup } from "../../../usecases/AddMemberToGroup";
 import { DeleteMemberFromGroup } from "../../../usecases/DeleteMemberFromGroup";
 import { GroupNotFoundError } from "../../../domain/errors/GroupErrors";
-
+import { MemberNotFoundError } from "../../../domain/errors/GroupErrors";
 
 export class MemberController {
   private addMemberToGroupUseCase: AddMemberToGroup;
@@ -42,6 +42,8 @@ export class MemberController {
     } catch (error) {
       if (error instanceof GroupNotFoundError) {
         res.status(404).json({ message: "Group not found" });
+      } else if (error instanceof MemberNotFoundError) {
+        res.status(404).json({ message: "Member not found" });
       }
     }
   }
