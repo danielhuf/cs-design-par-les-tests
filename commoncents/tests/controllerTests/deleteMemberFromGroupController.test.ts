@@ -37,4 +37,14 @@ describe("MemberController", () => {
       expect(res.status).toHaveBeenCalledWith(200);
       expect(res.json).toHaveBeenCalledWith({ message: `Successfully deleted ${memberName} from group` });
   });
+
+    it("should return a 404 status code if the group does not exist", async () => {
+        const memberName = "Alice";
+        req.params.member = memberName;
+        mockGroupRepository.findGroup.mockReturnValueOnce(undefined);
+    
+        await memberController.deleteMemberFromGroup(req, res);
+        expect(res.status).toHaveBeenCalledWith(404);
+        expect(res.json).toHaveBeenCalledWith({ message: "Group not found" });
+    });
 });
