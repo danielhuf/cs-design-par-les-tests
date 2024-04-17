@@ -49,4 +49,15 @@ describe("MemberController", () => {
         // Assert
         expect(res.status).toHaveBeenCalledWith(404);
     });
+
+    it("should return a 400 status code if the group id is not provided", async () => {
+        // Arrange
+        req = getMockReq();
+        
+        // Act
+        await memberController.addMemberToGroup(req, res);
+    
+        // Assert
+        expect(res.status).toHaveBeenCalledWith(400);
+    });
 });
