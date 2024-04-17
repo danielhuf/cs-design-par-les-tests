@@ -36,7 +36,13 @@ export class MemberController {
 
   public async deleteMemberFromGroup(req: Request, res: Response): Promise<void> {
     const { id, member } = req.params;
-    this.deleteMemberFromGroupUseCase.execute(id, member);
-    res.status(200).json({ message: `Successfully deleted ${member} from group` });
+    try {
+      await this.deleteMemberFromGroupUseCase.execute(id, member);
+      res.status(200).json({ message: `Successfully deleted ${member} from group` });
+    } catch (error) {
+      if (error instanceof GroupNotFoundError) {
+        res.status(404).json({ message: "Group not found" });
+      }
+    }
   }
 }
