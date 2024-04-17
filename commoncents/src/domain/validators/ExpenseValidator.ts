@@ -39,6 +39,9 @@ export class ExpenseValidator {
                 throw new Error("Split amounts do not add up to the total amount");
             }
         }
+        if (Object.keys(split).length < 2) {
+            throw new Error("Split must have at least two members");
+        }
     }
 
     static validateExpenseDate(date: Date): void {

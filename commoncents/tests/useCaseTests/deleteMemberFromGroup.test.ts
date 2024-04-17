@@ -32,7 +32,7 @@ describe("Delete Member from Group Use Case", () => {
         addMemberToGroup.execute(group.id, "Eva");
         expect(group.members.map(m => m.name)).toContain("Eva");
 
-        await deleteMemberFromGroup.execute(group.id, "Eva");
+        deleteMemberFromGroup.execute(group.id, "Eva");
 
         expect(group.members.map(m => m.name)).not.toContain("Eva");
     });
@@ -45,5 +45,15 @@ describe("Delete Member from Group Use Case", () => {
     it("should throw an error when trying to remove a member from a non-existent group", () => {
         const nonExistentGroupId = "fake-id";
         expect(() => deleteMemberFromGroup.execute(nonExistentGroupId, "Alice")).toThrow(GroupNotFoundError);
+    });
+
+    it("should remove a member and update differential balances correctly", () => {
+        const group = createGroup.execute("Test Group", [new Member("Alice"), new Member("Bob"), new Member("Charlie")]);
+        deleteMemberFromGroup.execute(group.id, "Bob");
+
+        expect(group.members.find(m => m.name === "Bob")).toBeUndefined();
+        expect(group.differentialBalances["Bob"]).toBeUndefined();
+        expect(group.differentialBalances["Alice"]["Bob"]).toBeUndefined();
+        expect(group.differentialBalances["Charlie"]["Bob"]).toBeUndefined();
     });
 });
