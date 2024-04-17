@@ -1,14 +1,17 @@
 import { IGroupController } from "../../../interfaces/controllers/IGroupController";
 import { Request, Response } from "express";
 import { CreateGroup } from "../../../usecases/CreateGroup";
+import { DeleteGroup } from "../../../usecases/DeleteGroup";
 import { Member } from "../../../domain/entities/Member";
 import { Group } from "../../../domain/entities/Group";
 
 export class GroupController implements IGroupController {
     private createGroupUseCase: CreateGroup;
+    private deleteGroupUseCase: DeleteGroup;
 
-    constructor(createGroupUseCase: CreateGroup) {
+    constructor(createGroupUseCase: CreateGroup, deleteGroupUseCase: DeleteGroup) {
         this.createGroupUseCase = createGroupUseCase;
+        this.deleteGroupUseCase = deleteGroupUseCase;
     }
 
     public async createGroup(req: Request, res: Response): Promise<void> {
@@ -44,5 +47,15 @@ export class GroupController implements IGroupController {
         if (body.members && !Array.isArray(body.members)) return false;
         if (body.members && body.members.some((member: any) => typeof member !== "string")) return false;
         return true;
+    }
+
+    public async deleteGroup(req: Request, res: Response): Promise<void> {
+        const { id } = req.params;
+        const result = this.deleteGroupUseCase.execute(id);
+        if (result.success) {
+            res.status(200).json({ success: true });
+        } else {
+            res.status(404).json({ message: "Group not found" });
+        }
     }
 }
