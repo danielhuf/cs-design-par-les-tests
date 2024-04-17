@@ -43,9 +43,10 @@ describe("Delete Member from Group Use Case", () => {
             deleteMemberFromGroup.execute(group.id, "Bob");
     
             expect(group.members.find(m => m.name === "Bob")).toBeUndefined();
-            expect(group.differentialBalances["Bob"]).toBeUndefined();
-            expect(group.differentialBalances["Alice"]["Bob"]).toBeUndefined();
-            expect(group.differentialBalances["Charlie"]["Bob"]).toBeUndefined();
+            expect(group.getDifferentialBalance("Bob", "Alice")).toBeUndefined();
+            expect(group.getDifferentialBalance("Bob", "Charlie")).toBeUndefined();
+            expect(group.getDifferentialBalance("Alice", "Bob")).toBeUndefined();
+            expect(group.getDifferentialBalance("Charlie", "Bob")).toBeUndefined();
         });
     });
 

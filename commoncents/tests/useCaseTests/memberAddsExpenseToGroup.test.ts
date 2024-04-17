@@ -215,8 +215,8 @@ describe("Member Adds Expense To Group Use Case", () => {
   
       memberAddsExpenseToGroup.execute(group.id, title, amount, payerName, date, isPercentual, split);
   
-      expect(group.differentialBalances["Alice"]["Bob"]).toBe(40);
-      expect(group.differentialBalances["Bob"]["Alice"]).toBe(-40);
+      expect(group.getDifferentialBalance("Alice", "Bob")).toBe(40);
+      expect(group.getDifferentialBalance("Bob", "Alice")).toBe(-40);
     });
   
     it("should update differential balances correctly after adding an expense in percentages", () => {
@@ -236,8 +236,8 @@ describe("Member Adds Expense To Group Use Case", () => {
   
       memberAddsExpenseToGroup.execute(group.id, title, amount, payerName, date, isPercentual, split);
   
-      expect(group.differentialBalances["Alice"]["Bob"]).toBe(4);
-      expect(group.differentialBalances["Bob"]["Alice"]).toBe(-4);
+      expect(group.getDifferentialBalance("Alice", "Bob")).toBe(4);
+      expect(group.getDifferentialBalance("Bob", "Alice")).toBe(-4);
     });
 
     it("should update differential balances correctly after adding multiple expenses", () => { 
@@ -268,8 +268,9 @@ describe("Member Adds Expense To Group Use Case", () => {
       memberAddsExpenseToGroup.execute(group.id, title1, amount1, payerName1, date1, isPercentual1, split1);
       memberAddsExpenseToGroup.execute(group.id, title2, amount2, payerName2, date2, isPercentual2, split2);
   
-      expect(group.differentialBalances["Alice"]["Bob"]).toBe(-26);
-      expect(group.differentialBalances["Bob"]["Alice"]).toBe(26);
+      expect(group.getDifferentialBalance("Alice", "Bob")).toBe(-26);
+      expect(group.getDifferentialBalance("Bob", "Alice")).toBe(26);
+      
     });
 
     it("should update differential balances correctly after adding a new member to the group", () => { 
@@ -288,16 +289,16 @@ describe("Member Adds Expense To Group Use Case", () => {
       };
   
       memberAddsExpenseToGroup.execute(group.id, title, amount, payerName, date, isPercentual, split);
-      expect(group.differentialBalances["Alice"]["Bob"]).toBe(4);
-      expect(group.differentialBalances["Bob"]["Alice"]).toBe(-4);
+      expect(group.getDifferentialBalance("Alice", "Bob")).toBe(4);
+      expect(group.getDifferentialBalance("Bob", "Alice")).toBe(-4);
   
       addMemberToGroup.execute(group.id, "Charlie");
-      expect(group.differentialBalances["Alice"]["Bob"]).toBe(4);
-      expect(group.differentialBalances["Bob"]["Alice"]).toBe(-4);
-      expect(group.differentialBalances["Alice"]["Charlie"]).toBe(0);
-      expect(group.differentialBalances["Charlie"]["Alice"]).toBe(0);
-      expect(group.differentialBalances["Bob"]["Charlie"]).toBe(0);
-      expect(group.differentialBalances["Charlie"]["Bob"]).toBe(0);
+      expect(group.getDifferentialBalance("Alice", "Bob")).toBe(4);
+      expect(group.getDifferentialBalance("Bob", "Alice")).toBe(-4);
+      expect(group.getDifferentialBalance("Alice", "Charlie")).toBe(0);
+      expect(group.getDifferentialBalance("Charlie", "Alice")).toBe(0);
+      expect(group.getDifferentialBalance("Bob", "Charlie")).toBe(0);
+      expect(group.getDifferentialBalance("Charlie", "Bob")).toBe(0);
     });
 
     it("should update differential balances correctly after removing a member from the group", () => { 
@@ -316,17 +317,17 @@ describe("Member Adds Expense To Group Use Case", () => {
       };
   
       memberAddsExpenseToGroup.execute(group.id, title, amount, payerName, date, isPercentual, split);
-      expect(group.differentialBalances["Alice"]["Bob"]).toBe(4);
-      expect(group.differentialBalances["Bob"]["Alice"]).toBe(-4);
+      expect(group.getDifferentialBalance("Alice", "Bob")).toBe(4);
+      expect(group.getDifferentialBalance("Bob", "Alice")).toBe(-4);
   
       group.removeMember("Charlie");
-      expect(group.differentialBalances["Alice"]["Bob"]).toBe(4);
-      expect(group.differentialBalances["Bob"]["Alice"]).toBe(-4);
-      expect(group.differentialBalances["Alice"]["Charlie"]).toBe(undefined);
-      expect(group.differentialBalances["Bob"]["Charlie"]).toBe(undefined);
+      expect(group.getDifferentialBalance("Alice", "Bob")).toBe(4);
+      expect(group.getDifferentialBalance("Bob", "Alice")).toBe(-4);
+      expect(group.getDifferentialBalance("Alice", "Charlie")).toBeUndefined();
+      expect(group.getDifferentialBalance("Bob", "Charlie")).toBeUndefined();
 
       group.removeMember("Bob");
-      expect(group.differentialBalances["Alice"]["Bob"]).toBe(undefined);
+      expect(group.getDifferentialBalance("Alice", "Bob")).toBeUndefined();
     });
 
     it("should update differential balances correctly after adding an equally split expense", () => {
@@ -345,12 +346,12 @@ describe("Member Adds Expense To Group Use Case", () => {
       
       const updatedGroup = memberAddsExpenseToGroup.execute(group.id, title, amount, payerName, date, isPercentual, split, isEquallySplit, membersSplit);
       
-      expect(updatedGroup.differentialBalances["Alice"]["Bob"]).toBe(16.67);
-      expect(updatedGroup.differentialBalances["Bob"]["Alice"]).toBe(-16.67);
-      expect(updatedGroup.differentialBalances["Alice"]["Charlie"]).toBe(16.67);
-      expect(updatedGroup.differentialBalances["Charlie"]["Alice"]).toBe(-16.67);
-      expect(updatedGroup.differentialBalances["Bob"]["Charlie"]).toBe(0);
-      expect(updatedGroup.differentialBalances["Charlie"]["Bob"]).toBe(0);
+      expect(group.getDifferentialBalance("Alice", "Bob")).toBe(16.67);
+      expect(group.getDifferentialBalance("Bob", "Alice")).toBe(-16.67);
+      expect(group.getDifferentialBalance("Alice", "Charlie")).toBe(16.67);
+      expect(group.getDifferentialBalance("Charlie", "Alice")).toBe(-16.67);
+      expect(group.getDifferentialBalance("Bob", "Charlie")).toBe(0);
+      expect(group.getDifferentialBalance("Charlie", "Bob")).toBe(0);
     });
 
     it("should update differential balances correctly after adding an equally split expense in which the payer is not involved", () => { 
@@ -367,14 +368,14 @@ describe("Member Adds Expense To Group Use Case", () => {
       const membersSplit = [members[1], members[2]];
       const split = {};
       
-      const updatedGroup = memberAddsExpenseToGroup.execute(group.id, title, amount, payerName, date, isPercentual, split, isEquallySplit, membersSplit);
+      memberAddsExpenseToGroup.execute(group.id, title, amount, payerName, date, isPercentual, split, isEquallySplit, membersSplit);
       
-      expect(updatedGroup.differentialBalances["Alice"]["Bob"]).toBe(25);
-      expect(updatedGroup.differentialBalances["Bob"]["Alice"]).toBe(-25);
-      expect(updatedGroup.differentialBalances["Alice"]["Charlie"]).toBe(25);
-      expect(updatedGroup.differentialBalances["Charlie"]["Alice"]).toBe(-25);
-      expect(updatedGroup.differentialBalances["Bob"]["Charlie"]).toBe(0);
-      expect(updatedGroup.differentialBalances["Charlie"]["Bob"]).toBe(0);
+      expect(group.getDifferentialBalance("Alice", "Bob")).toBe(25);
+      expect(group.getDifferentialBalance("Bob", "Alice")).toBe(-25);
+      expect(group.getDifferentialBalance("Alice", "Charlie")).toBe(25);
+      expect(group.getDifferentialBalance("Charlie", "Alice")).toBe(-25);
+      expect(group.getDifferentialBalance("Bob", "Charlie")).toBe(0);
+      expect(group.getDifferentialBalance("Charlie", "Bob")).toBe(0);
     });
   });
 
