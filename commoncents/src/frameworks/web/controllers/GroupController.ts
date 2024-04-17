@@ -4,7 +4,7 @@ import { CreateGroup } from "../../../usecases/CreateGroup";
 import { DeleteGroup } from "../../../usecases/DeleteGroup";
 import { Member } from "../../../domain/entities/Member";
 import { Group } from "../../../domain/entities/Group";
-
+import { GroupNotFoundError } from "../../../domain/errors/GroupErrors";
 export class GroupController implements IGroupController {
     private createGroupUseCase: CreateGroup;
     private deleteGroupUseCase: DeleteGroup;
@@ -51,11 +51,13 @@ export class GroupController implements IGroupController {
 
     public async deleteGroup(req: Request, res: Response): Promise<void> {
         const { id } = req.params;
-        const result = this.deleteGroupUseCase.execute(id);
-        if (result.success) {
+        try {
+            this.deleteGroupUseCase.execute(id);
             res.status(200).json({ success: true });
-        } else {
-            res.status(404).json({ message: "Group not found" });
+        } catch (error) {
+            if (error instanceof GroupNotFoundError) {
+                res.status(404).json({ message: "Group not found" });
+            }
         }
     }
 }
