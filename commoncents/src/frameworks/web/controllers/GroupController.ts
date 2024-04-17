@@ -1,11 +1,10 @@
-import { IGroupController } from "../../../interfaces/controllers/IGroupController";
 import { Request, Response } from "express";
 import { CreateGroup } from "../../../usecases/CreateGroup";
 import { DeleteGroup } from "../../../usecases/DeleteGroup";
 import { Member } from "../../../domain/entities/Member";
 import { Group } from "../../../domain/entities/Group";
 import { GroupNotFoundError } from "../../../domain/errors/GroupErrors";
-export class GroupController implements IGroupController {
+export class GroupController {
     private createGroupUseCase: CreateGroup;
     private deleteGroupUseCase: DeleteGroup;
 
