@@ -12,6 +12,10 @@ export class MemberController {
 
   public async addMemberToGroup(req: Request, res: Response): Promise<void> {
     const { id } = req.params;
+    if (!id) {
+      res.status(400).json({ message: "Group id is required" });
+      return;
+    }
     const { name } = req.body;
     try {
       await this.addMemberToGroupUseCase.execute(id, name);
