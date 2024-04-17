@@ -37,4 +37,16 @@ describe("MemberController", () => {
       expect(res.status).toHaveBeenCalledWith(200);
       expect(res.json).toHaveBeenCalledWith({ success: true });
   });
+
+    it("should return a 404 status code if the group does not exist", async () => {
+        // Arrange
+        req.body = { name: "Alice" };
+        mockGroupRepository.findGroup.mockReturnValue(undefined);
+        
+        // Act
+        await memberController.addMemberToGroup(req, res);
+    
+        // Assert
+        expect(res.status).toHaveBeenCalledWith(404);
+    });
 });
