@@ -1,36 +1,39 @@
+import { Member } from "./Member";
+
 export class Expense {
 
     title: string;
     amount: number;
     payerName: string;
     date: Date;
-    isPercentual: boolean;
+    isEquallySplit?: boolean;
+    isPercentual?: boolean;
     split: { [key: string]: number };
 
-    constructor(title: string, amount: number, payerName: string, date: Date, isPercentual: boolean, split: { [key: string]: number }) {
+    constructor(title: string, amount: number, payerName: string, date: Date, isPercentual: boolean, split: { [key: string]: number }, isEquallySplit?: boolean, membersSplit?: Member[]) {
         this.title = title;
         this.amount = amount;
         this.payerName = payerName;
         this.date = date;
+        let splitTemp = {} as { [key: string]: number };
         this.isPercentual = isPercentual;
-        this.split = split;
-
-        if (divideEqually && splitPercentages) {
-            throw new Error("Both dividedEqually and splitPercentages cannot be provided simultaneously.");
+        if(Object.keys(split).length !== 0){
+            splitTemp = split;
         }
-
-        if (divideEqually) {
-            this.calculateEqualSplit();
-        } else if (splitPercentages) {
-            this.splitPercentages = splitPercentages;
-        } else {
-            throw new Error("Either dividedEqually or splitPercentages must be provided.");
+        else if(membersSplit && isEquallySplit){
+            this.isEquallySplit = isEquallySplit;
+            splitTemp = this.calculateEqualSplit(membersSplit);
         }
+        this.split = splitTemp;
     }
 
-    private calculateEqualSplit(): void {
-        this.splitPercentages = {};
-        this.splitPercentages[this.payerName] = 100;
+    private calculateEqualSplit(members: Member[]): { [key: string]: number } {
+        const splitAmount = Number((this.amount / members.length).toFixed(2));
+        const split = {} as { [key: string]: number };
+        members.forEach((member) => {
+            split[member.name] = splitAmount;
+        });
+        return split;
     }
 
 }
