@@ -36,4 +36,13 @@ describe("GroupController", () => {
       expect(res.json).toHaveBeenCalledWith({ success: true });
   });
 
+    it("should return 404 if group is not found", async () => {
+        mockGroupRepository.deleteGroup.mockReturnValue(false);
+        mockGroupRepository.findGroup.mockReturnValue(undefined);
+        await groupController.deleteGroup(req, res);
+    
+        expect(res.status).toHaveBeenCalledWith(404);
+        expect(res.json).toHaveBeenCalledWith({ message: "Group not found" });
+    });
+
 });
