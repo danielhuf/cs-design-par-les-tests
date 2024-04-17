@@ -4,6 +4,7 @@ import { MemberController } from "../../src/frameworks/web/controllers/MemberCon
 import { Group } from "../../src/domain/entities/Group";
 import { IGroupRepository } from "../../src/interfaces/repositories/IGroupRepository";
 import { AddMemberToGroup } from "../../src/usecases/AddMemberToGroup";
+import { DeleteMemberFromGroup } from "../../src/usecases/DeleteMemberFromGroup";
 
 describe("MemberController", () => {
   let mockGroupRepository: jest.Mocked<IGroupRepository>;
@@ -19,7 +20,7 @@ describe("MemberController", () => {
           findGroup: jest.fn(),
       };
       addMemberToGroup = new AddMemberToGroup(mockGroupRepository);
-      memberController = new MemberController(addMemberToGroup);
+      memberController = new MemberController(addMemberToGroup, new DeleteMemberFromGroup(mockGroupRepository));
       req = getMockReq({ params: { id: '123' } });
       res = getMockRes().res;
   });
