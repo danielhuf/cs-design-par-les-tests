@@ -50,6 +50,10 @@ export class GroupController {
 
     public async deleteGroup(req: Request, res: Response): Promise<void> {
         const { id } = req.params;
+        if (!id) {
+            res.status(400).json({ message: "Group id is required" });
+            return;
+        }
         try {
             this.deleteGroupUseCase.execute(id);
             res.status(200).json({ success: true });
