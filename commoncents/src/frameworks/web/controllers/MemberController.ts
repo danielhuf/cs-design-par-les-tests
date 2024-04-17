@@ -1,13 +1,16 @@
 import { Request, Response } from "express";
 import { AddMemberToGroup } from "../../../usecases/AddMemberToGroup";
+import { DeleteMemberFromGroup } from "../../../usecases/DeleteMemberFromGroup";
 import { GroupNotFoundError } from "../../../domain/errors/GroupErrors";
 
 
 export class MemberController {
   private addMemberToGroupUseCase: AddMemberToGroup;
+  private deleteMemberFromGroupUseCase: DeleteMemberFromGroup;
 
-  constructor(addMemberToGroupUseCase: AddMemberToGroup) {
+  constructor(addMemberToGroupUseCase: AddMemberToGroup, deleteMemberFromGroupUseCase: DeleteMemberFromGroup) {
     this.addMemberToGroupUseCase = addMemberToGroupUseCase;
+    this.deleteMemberFromGroupUseCase = deleteMemberFromGroupUseCase;
   }
 
   public async addMemberToGroup(req: Request, res: Response): Promise<void> {
@@ -29,5 +32,11 @@ export class MemberController {
         res.status(404).json({ message: "Group not found" });
       }
     }
+  }
+
+  public async deleteMemberFromGroup(req: Request, res: Response): Promise<void> {
+    const { id, member } = req.params;
+    this.deleteMemberFromGroupUseCase.execute(id, member);
+    res.status(200).json({ message: `Successfully deleted ${member} from group` });
   }
 }
