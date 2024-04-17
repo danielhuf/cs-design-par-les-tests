@@ -15,55 +15,59 @@ describe("Create Group Use Case", () => {
         createGroup = new CreateGroup(groupRepository);
     });
 
-    it("should create a group with a name and initial members", () => {
-        const groupName = "Holiday Trip";
-        const members = [new Member("Alice"), new Member("Bob")];
-        const group = createGroup.execute(groupName, members);
+    describe("Successfull creation", () => {
+        it("should create a group with a name and initial members", () => {
+            const groupName = "Holiday Trip";
+            const members = [new Member("Alice"), new Member("Bob")];
+            const group = createGroup.execute(groupName, members);
 
-        expect(group.name).toBe(groupName);
-        expect(group.members).toEqual(members);
+            expect(group.name).toBe(groupName);
+            expect(group.members).toEqual(members);
+        });
+
+        it("should create a group with a name and no initial members", () => {
+            const groupName = "Holiday Trip";
+            const group = createGroup.execute(groupName);
+
+            expect(group.name).toBe(groupName);
+            expect(group.members).toEqual([]);
+        });
     });
 
-    it("should create a group with a name and no initial members", () => {
-        const groupName = "Holiday Trip";
-        const group = createGroup.execute(groupName);
+    describe("Unsuccessfull creation", () => {
+        it("should not create a group with an empty name", () => {
+            const groupName = "";
+            const members = [new Member("Alice"), new Member("Bob")]
 
-        expect(group.name).toBe(groupName);
-        expect(group.members).toEqual([]);
-    });
+            expect(() => createGroup.execute(groupName, members)).toThrow(EmptyGroupError);
+        });
 
-    it("should not create a group with an empty name", () => {
-        const groupName = "";
-        const members = [new Member("Alice"), new Member("Bob")]
+        it("should not create a group with a name that only contains whitespace", () => {
+            const groupName = "  ";
+            const members = [new Member("Alice"), new Member("Bob")]
 
-        expect(() => createGroup.execute(groupName, members)).toThrow(EmptyGroupError);
-    });
+            expect(() => createGroup.execute(groupName, members)).toThrow(EmptyGroupError);
+        });
 
-    it("should not create a group with a name that only contains whitespace", () => {
-        const groupName = "  ";
-        const members = [new Member("Alice"), new Member("Bob")]
+        it("should not create a group with a member that has an empty name", () => {
+            const groupName = "Holiday Trip";
+            const members = [new Member("Alice"), new Member("")];
 
-        expect(() => createGroup.execute(groupName, members)).toThrow(EmptyGroupError);
-    });
+            expect(() => createGroup.execute(groupName, members)).toThrow(EmptyMemberError);
+        });
 
-    it("should not create a group with a member that has an empty name", () => {
-        const groupName = "Holiday Trip";
-        const members = [new Member("Alice"), new Member("")];
+        it("should not create a group with a member that only contains whitespace", () => {
+            const groupName = "Holiday Trip";
+            const members = [new Member("Alice"), new Member("  ")];
 
-        expect(() => createGroup.execute(groupName, members)).toThrow(EmptyMemberError);
-    });
+            expect(() => createGroup.execute(groupName, members)).toThrow(EmptyMemberError);
+        });
 
-    it("should not create a group with a member that only contains whitespace", () => {
-        const groupName = "Holiday Trip";
-        const members = [new Member("Alice"), new Member("  ")];
+        it("should not create a group with members that have the same name", () => {
+            const groupName = "Holiday Trip";
+            const members = [new Member("Alice"), new Member("Alice")];
 
-        expect(() => createGroup.execute(groupName, members)).toThrow(EmptyMemberError);
-    });
-
-    it("should not create a group with members that have the same name", () => {
-        const groupName = "Holiday Trip";
-        const members = [new Member("Alice"), new Member("Alice")];
-
-        expect(() => createGroup.execute(groupName, members)).toThrow(DuplicateMemberError);
+            expect(() => createGroup.execute(groupName, members)).toThrow(DuplicateMemberError);
+        });
     });
 });
