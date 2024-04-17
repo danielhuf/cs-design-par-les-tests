@@ -114,6 +114,35 @@ describe("Member Adds Expense To Group Use Case", () => {
     expect(group.expenses[1].split).toEqual(split2);
   });
 
+  it("should add an expense to a group and equally divide it", () => {
+    const groupName = "Holiday Trip";
+    const members = [new Member("Alice"), new Member("Bob"), new Member("Charlie")];
+    const group = createGroup.execute(groupName, members);
+
+    const title = "Dinner";
+    const amount = 50;
+    const payerName = "Alice";
+    const date = new Date();
+    const isEquallySplit = true;
+    const isPercentual = false;
+    const membersSplit = members;
+    const split = {};
+    
+    //Arrange
+    const updatedGroup = memberAddsExpenseToGroup.execute(group.id, title, amount, payerName, date, isPercentual, split, isEquallySplit, membersSplit);
+    const expectedSplit = {"Alice": 16.67, "Bob": 16.67, "Charlie": 16.67};
+    
+    //Assert
+    expect(updatedGroup.expenses.length).toBe(1);
+    expect(updatedGroup.expenses[0].title).toBe(title);
+    expect(updatedGroup.expenses[0].amount).toBe(amount);
+    expect(updatedGroup.expenses[0].payerName).toBe(payerName);
+    expect(updatedGroup.expenses[0].date).toBe(date);
+    expect(updatedGroup.expenses[0].isPercentual).toBe(isPercentual);
+    expect(updatedGroup.expenses[0].split).toEqual(expectedSplit);
+    expect(updatedGroup.expenses[0].isEquallySplit).toBe(isEquallySplit);
+  });
+
   it("should throw an error when adding an expense to a non-existent group", () => {
     const nonExistentGroupId = "fake-id";
     const title = "Dinner";
