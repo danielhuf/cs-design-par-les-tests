@@ -36,6 +36,10 @@ export class MemberController {
 
   public async deleteMemberFromGroup(req: Request, res: Response): Promise<void> {
     const { id, member } = req.params;
+    if (!id) {
+      res.status(400).json({ message: "Group id is required" });
+      return;
+    }
     if (!member) {
       res.status(400).json({ message: "Member name is required" });
       return;
