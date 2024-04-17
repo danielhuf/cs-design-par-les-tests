@@ -64,4 +64,12 @@ describe("MemberController", () => {
         expect(res.status).toHaveBeenCalledWith(400);
         expect(res.json).toHaveBeenCalledWith({ message: "Member name is required" });
     });
+
+    it("should return a 400 status code if the group id is not provided", async () => {
+        req = getMockReq({ params: { member: "Alice"} });
+    
+        await memberController.deleteMemberFromGroup(req, res);
+        expect(res.status).toHaveBeenCalledWith(400);
+        expect(res.json).toHaveBeenCalledWith({ message: "Group id is required" });
+    });
 });
