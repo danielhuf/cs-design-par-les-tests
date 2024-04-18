@@ -179,7 +179,7 @@ describe("ExpenseController", () => {
 
     // Assert
     expect(res.status).toHaveBeenCalledWith(400);
-    expect(res.json).toHaveBeenCalledWith({ error: "Expense title is required" });
+    expect(res.json).toHaveBeenCalledWith({ error: "Missing required fields: title" });
   });
 
   it("should return 400 if amount is not provided", async () => {
@@ -204,7 +204,7 @@ describe("ExpenseController", () => {
 
     // Assert
     expect(res.status).toHaveBeenCalledWith(400);
-    expect(res.json).toHaveBeenCalledWith({ error: "Expense amount is required" });
+    expect(res.json).toHaveBeenCalledWith({ error: "Missing required fields: amount" });
   });
 
   it("should return 400 if payer name is not provided", async () => {
@@ -229,7 +229,7 @@ describe("ExpenseController", () => {
 
     // Assert
     expect(res.status).toHaveBeenCalledWith(400);
-    expect(res.json).toHaveBeenCalledWith({ error: "Payer name is required" });
+    expect(res.json).toHaveBeenCalledWith({ error: "Missing required fields: payerName" });
   });
 
   it("should return 400 if date is not provided", async () => {
@@ -254,7 +254,7 @@ describe("ExpenseController", () => {
 
     // Assert
     expect(res.status).toHaveBeenCalledWith(400);
-    expect(res.json).toHaveBeenCalledWith({ error: "Expense date is required" });
+    expect(res.json).toHaveBeenCalledWith({ error: "Missing required fields: date" });
   });
 
   it("should return 400 if isPercentual is not provided", async () => {
@@ -279,7 +279,7 @@ describe("ExpenseController", () => {
 
     // Assert
     expect(res.status).toHaveBeenCalledWith(400);
-    expect(res.json).toHaveBeenCalledWith({ error: "isPercentual is required" });
+    expect(res.json).toHaveBeenCalledWith({ error: "Missing required fields: isPercentual" });
   });
 
   it("should return 400 if split is not provided", async () => {
@@ -301,7 +301,30 @@ describe("ExpenseController", () => {
 
     // Assert
     expect(res.status).toHaveBeenCalledWith(400);
-    expect(res.json).toHaveBeenCalledWith({ error: "Expense split is required" });
+    expect(res.json).toHaveBeenCalledWith(expect.objectContaining({ error: "Missing required fields: split" }));
+  });
+
+  it("should return 400 if title and amount are not provided", async () => {
+    const payerName = "Alice";
+    const date = new Date();
+    const isPercentual = true;
+    const split = {
+      "Alice": 50,
+      "Bob": 50
+    };
+    req.body = {
+      payerName,
+      date,
+      isPercentual,
+      split
+    };
+
+    // Act
+    await expenseController.addExpenseToGroup(req, res);
+
+    // Assert
+    expect(res.status).toHaveBeenCalledWith(400);
+    expect(res.json).toHaveBeenCalledWith(expect.objectContaining({ error: "Missing required fields: title, amount" }));
   });
 
   it("should return 400 if split is not an object", async () => {
