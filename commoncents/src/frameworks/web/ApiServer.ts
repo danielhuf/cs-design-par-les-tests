@@ -8,6 +8,7 @@ export class ApiServer {
     this.app = express();
     this.app.use(express.json());
     this.app.post('/group', groupController.createGroup);
+    this.app.delete('/group/:id', groupController.deleteGroup);
   }
 
   public getApp(): Application {
