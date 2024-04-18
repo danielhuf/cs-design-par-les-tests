@@ -8,8 +8,6 @@ import { GroupNotFoundError } from "../../src/domain/errors/GroupErrors";
 describe("GroupController", () => {
     let mockCreateGroup: jest.Mocked<CreateGroup>;
     let mockDeleteGroup: jest.Mocked<DeleteGroup>;
-    let deleteGroup: DeleteGroup;
-    let createGroup: CreateGroup;
     let groupController: GroupController;
     let req: Request;
     let res: Response;
