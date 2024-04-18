@@ -10,6 +10,10 @@ export class ExpenseController {
 
   public async addExpenseToGroup(req: Request, res: Response): Promise<void> {
     const { id } = req.params;
+    if (!id) {
+      res.status(400).json({ error: "Group id is required" });
+      return;
+    }
     const { title, amount, payerName, date, isPercentual, split } = req.body;
     try {
       this.memberAddsExpenseToGroupUseCase.execute(id, title, amount, payerName, date, isPercentual, split);
