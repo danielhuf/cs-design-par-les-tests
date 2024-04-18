@@ -101,4 +101,15 @@ describe('API Server Tests', () => {
         expect(mockMemberController.deleteMemberFromGroup).toHaveBeenCalled();
     });
 
+    it('should return 404 for unhandled routes', async () => {
+        // Arrange
+        apiServer = new ApiServer(mockGroupController, mockMemberController);
+
+        // Act
+        const response = await request(apiServer.getApp())
+            .get('/unknown-route');
+
+        // Assert
+        expect(response.status).toBe(404);
+    });
 });
