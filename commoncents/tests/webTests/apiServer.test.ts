@@ -28,7 +28,7 @@ describe('API Server Tests', () => {
 
     it('should route POST /group to the createGroup method of GroupController', async () => {
         // Arrange
-        apiServer = new ApiServer(mockGroupController, mockMemberController);
+        apiServer = new ApiServer(mockGroupController, mockMemberController, mockExpenseController);
         mockGroupController.createGroup.mockImplementation(async (req, res) => {
             res.status(201).send({
                 id: "group-id",
@@ -54,7 +54,7 @@ describe('API Server Tests', () => {
 
     it('should route DELETE /group to the deleteGroup method of GroupController', async () => {
         // Arrange
-        apiServer = new ApiServer(mockGroupController, mockMemberController);
+        apiServer = new ApiServer(mockGroupController, mockMemberController, mockExpenseController);
         mockGroupController.deleteGroup.mockImplementation(async (req, res) => {
          res.status(200).send({ success: true });
         });
@@ -72,7 +72,7 @@ describe('API Server Tests', () => {
 
     it('should route POST /group/:id/member to the addMember method of MemberController', async () => {
         // Arrange
-        apiServer = new ApiServer(mockGroupController, mockMemberController);
+        apiServer = new ApiServer(mockGroupController, mockMemberController, mockExpenseController);
         mockMemberController.addMemberToGroup.mockImplementation(async (req, res) => {
             res.status(201).send({ success: true });
         });
@@ -90,7 +90,7 @@ describe('API Server Tests', () => {
 
     it('should route DELETE /group/:id/member/:name to the removeMember method of MemberController', async () => {
         // Arrange
-        apiServer = new ApiServer(mockGroupController, mockMemberController);
+        apiServer = new ApiServer(mockGroupController, mockMemberController, mockExpenseController);
         mockMemberController.deleteMemberFromGroup.mockImplementation(async (req, res) => {
             res.status(200).send({ success: true });
         });
@@ -126,7 +126,7 @@ describe('API Server Tests', () => {
 
     it('should return 404 for unhandled routes', async () => {
         // Arrange
-        apiServer = new ApiServer(mockGroupController, mockMemberController);
+        apiServer = new ApiServer(mockGroupController, mockMemberController, mockExpenseController);
 
         // Act
         const response = await request(apiServer.getApp())
