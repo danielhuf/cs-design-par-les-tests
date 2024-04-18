@@ -86,5 +86,36 @@ describe("ExpenseController", () => {
     expect(res.status).toHaveBeenCalledWith(404);
     expect(res.json).toHaveBeenCalledWith({ error: "Group not found" });
   });
+
+  it("should return an error response if the use case fails", async () => {
+    const title = "Dinner";
+    const amount = 50;
+    const payerName = "Alice";
+    const date = new Date();
+    const isPercentual = true;
+    const split = {
+      "Alice": 50,
+      "Bob": 50
+    };
+    req.body = {
+      title,
+      amount,
+      payerName,
+      date,
+      isPercentual,
+      split
+    };
+    mockAddExpenseToGroup.execute.mockImplementation(() => {
+      throw new Error("Error message");
+    });
+
+    // Act
+    await expenseController.addExpenseToGroup(req, res);
+
+    // Assert
+    expect(mockAddExpenseToGroup.execute).toHaveBeenCalledWith("123", title, amount, payerName, date, isPercentual, split);
+    expect(res.status).toHaveBeenCalledWith(400);
+    expect(res.json).toHaveBeenCalledWith({ error: "Error message" });
+  });
 });
 
