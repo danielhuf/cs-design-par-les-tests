@@ -2,52 +2,58 @@ import { Request, Response } from "express";
 import { getMockReq, getMockRes } from "@jest-mock/express"
 import { MemberController } from "../../src/frameworks/web/controllers/MemberController";
 import { Group } from "../../src/domain/entities/Group";
-import { IGroupRepository } from "../../src/interfaces/repositories/IGroupRepository";
 import { AddMemberToGroup } from "../../src/usecases/AddMemberToGroup";
 import { DeleteMemberFromGroup } from "../../src/usecases/DeleteMemberFromGroup";
+import { GroupNotFoundError } from "../../src/domain/errors/GroupErrors";
 
 describe("MemberController", () => {
-  let mockGroupRepository: jest.Mocked<IGroupRepository>;
-  let addMemberToGroup: AddMemberToGroup;
-  let memberController: MemberController;
-  let req: Request;
-  let res: Response;
+    let mockAddMemberToGroup: jest.Mocked<AddMemberToGroup>;
+    let mockDeleteMemberFromGroup: jest.Mocked<DeleteMemberFromGroup>;
+    let memberController: MemberController;
+    let req: Request;
+    let res: Response;
 
-  beforeEach(() => {
-      mockGroupRepository = {
-          addGroup: jest.fn(),
-          deleteGroup: jest.fn(),
-          findGroup: jest.fn(),
-      };
-      addMemberToGroup = new AddMemberToGroup(mockGroupRepository);
-      memberController = new MemberController(addMemberToGroup, new DeleteMemberFromGroup(mockGroupRepository));
-      req = getMockReq({ params: { id: '123' } });
-      res = getMockRes().res;
-  });
+    beforeEach(() => {
+        mockAddMemberToGroup = {
+            execute: jest.fn(),
+        } as any; // as any to avoid having to mock all methods of AddMemberToGroup
 
-  it("should successfully add a member to an existing group and return the appropriate response", async () => {
-      // Arrange
-      req.body = { name: "Alice" };
-      const group = new Group("123", "Adventure Club", []);
-      mockGroupRepository.findGroup.mockReturnValue(group);
-      
-      // Act
-      await memberController.addMemberToGroup(req, res);
+        mockDeleteMemberFromGroup = {
+            execute: jest.fn(),
+        } as any;
 
-      // Assert
-      expect(res.status).toHaveBeenCalledWith(200);
-      expect(res.json).toHaveBeenCalledWith({ success: true });
-  });
+        memberController = new MemberController(mockAddMemberToGroup, mockDeleteMemberFromGroup);
+        req = getMockReq({ params: { id: '123' } });
+        res = getMockRes().res;
+    });
+
+    it("should successfully add a member to an existing group and return the appropriate response", async () => {
+        // Arrange
+        req.body = { name: "Alice" };
+        const group = new Group("123", "Adventure Club", []);
+        mockAddMemberToGroup.execute.mockReturnValue(group);   
+
+        // Act
+        await memberController.addMemberToGroup(req, res);
+
+        // Assert
+        expect(mockAddMemberToGroup.execute).toHaveBeenCalledWith("123", "Alice");
+        expect(res.status).toHaveBeenCalledWith(200);
+        expect(res.json).toHaveBeenCalledWith({ success: true });
+    });
 
     it("should return a 404 status code if the group does not exist", async () => {
         // Arrange
         req.body = { name: "Alice" };
-        mockGroupRepository.findGroup.mockReturnValue(undefined);
+        mockAddMemberToGroup.execute.mockImplementation(() => {
+            throw new GroupNotFoundError();
+        });
         
         // Act
         await memberController.addMemberToGroup(req, res);
     
         // Assert
+        expect(mockAddMemberToGroup.execute).toHaveBeenCalledWith("123", "Alice");
         expect(res.status).toHaveBeenCalledWith(404);
         expect(res.json).toHaveBeenCalledWith({ message: "Group not found" });
     });
