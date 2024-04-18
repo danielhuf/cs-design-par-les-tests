@@ -18,13 +18,21 @@ export class DifferentialBalanceManager {
             if (!this.balances[member.name]) {
                 this.balances[member.name] = {};
             }
+            if (!this.simplfiedBalances[member.name]) {
+                this.simplfiedBalances[member.name] = {};
+            }
 
             this.members.forEach(m => {
                 if (m.name !== member.name) {
                     // Initialize nested member keys to 0 if they don't exist yet.
                     this.balances[member.name][m.name] = 0;
+                    this.simplfiedBalances[member.name][m.name] = 0;
+
                     this.balances[m.name] = this.balances[m.name] || {};
+                    this.simplfiedBalances[m.name] = this.simplfiedBalances[m.name] || {};
+
                     this.balances[m.name][member.name] = 0;
+                    this.simplfiedBalances[m.name][member.name] = 0;
                 }
             });
         });
@@ -80,12 +88,21 @@ export class DifferentialBalanceManager {
         this.updateDifferentialBalance(payee, payer, -amount);
     }
 
+    private updateSimplifiedBalances(): void {
+        if (this.members.length <= 2) {
+            this.simplfiedBalances = this.balances;
+        }
+    }
+
     addMember(member: Member): void {
         this.balances[member.name] = {};
+        this.simplfiedBalances[member.name] = {};
         this.members.forEach(m => {
             if (m.name !== member.name) {
                 this.balances[member.name][m.name] = 0;
                 this.balances[m.name][member.name] = 0;
+                this.simplfiedBalances[member.name][m.name] = 0;
+                this.simplfiedBalances[m.name][member.name] = 0;
             }
         });
     }
@@ -94,6 +111,10 @@ export class DifferentialBalanceManager {
         delete this.balances[memberName];
         Object.keys(this.balances).forEach(otherMember => {
             delete this.balances[otherMember][memberName];
+        });
+        delete this.simplfiedBalances[memberName];
+        Object.keys(this.simplfiedBalances).forEach(otherMember => {
+            delete this.simplfiedBalances[otherMember][memberName];
         });
     }
 
