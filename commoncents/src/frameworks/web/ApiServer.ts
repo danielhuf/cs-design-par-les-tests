@@ -12,6 +12,7 @@ export class ApiServer {
     this.app.post(RoutePaths.createGroup, groupController.createGroup);
     this.app.delete(RoutePaths.deleteGroup, groupController.deleteGroup);
     this.app.post(RoutePaths.addMember, memberController.addMemberToGroup);
+    this.app.delete(RoutePaths.deleteMember, memberController.deleteMemberFromGroup);
   }
 
   public getApp(): Application {
