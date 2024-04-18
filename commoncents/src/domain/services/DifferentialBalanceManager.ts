@@ -1,13 +1,17 @@
 import { Member } from "../entities/Member";
 import { Expense } from "../entities/Expense";
+import { SimplifiedBalanceCalculator } from "./SimplifiedBalanceCalculator";
+import e from "express";
 
 export class DifferentialBalanceManager {
     private balances: { [key: string]: { [key: string]: number } };
     private simplfiedBalances: { [key: string]: { [key: string]: number } };
+    private simplifiedBalanceCalculator: SimplifiedBalanceCalculator;
 
     constructor(private members: Member[]) {
         this.balances = {};
         this.simplfiedBalances = {};
+        this.simplifiedBalanceCalculator = new SimplifiedBalanceCalculator();
         this.initializeBalances();
     }
 
@@ -61,9 +65,17 @@ export class DifferentialBalanceManager {
         }
     }
 
-    updateSimplifiedBalances(): void {
+    updateSimplifiedBalances(expense : Expense): void {
         if (this.members.length <= 2) {
             this.simplfiedBalances = this.balances;
+        } else {
+            for (const member of this.members) {
+                for (const otherMember of this.members) {
+                    if (member.name !== otherMember.name) {
+                        this.simplfiedBalances[member.name][otherMember.name] = this.simplifiedBalanceCalculator.calculate(this.balances, member.name, otherMember.name);
+                    }
+                }
+            }
         }
     }
 
