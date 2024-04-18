@@ -10,11 +10,11 @@ export class ApiServer {
   constructor(groupController: GroupController, memberController: MemberController, expenseController: ExpenseController) {
     this.app = express();
     this.app.use(express.json());
-    this.app.post(RoutePaths.createGroup, groupController.createGroup);
-    this.app.delete(RoutePaths.deleteGroup, groupController.deleteGroup);
-    this.app.post(RoutePaths.addMember, memberController.addMemberToGroup);
-    this.app.delete(RoutePaths.deleteMember, memberController.deleteMemberFromGroup);
-    this.app.post(RoutePaths.addExpense, expenseController.addExpenseToGroup);
+    this.app.post(RoutePaths.createGroup, (req, res) => groupController.createGroup(req, res));
+    this.app.delete(RoutePaths.deleteGroup, (req, res) => groupController.deleteGroup(req, res));
+    this.app.post(RoutePaths.addMember, (req, res) => memberController.addMemberToGroup(req, res));
+    this.app.delete(RoutePaths.deleteMember, (req, res) => memberController.deleteMemberFromGroup(req, res));
+    this.app.post(RoutePaths.addExpense, (req, res) => expenseController.addExpenseToGroup(req, res));
   }
 
   public getApp(): Application {

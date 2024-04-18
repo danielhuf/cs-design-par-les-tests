@@ -31,7 +31,7 @@ describe("MemberController", () => {
     it("should successfully delete a member from a group and return the appropriate response", async () => {
         
         const memberName = "Alice";
-        req.params.member = memberName;
+        req.params.name = memberName;
         mockDeleteMemberFromGroup.execute.mockReturnValue(undefined);
         
         await memberController.deleteMemberFromGroup(req, res);
@@ -43,7 +43,7 @@ describe("MemberController", () => {
 
     it("should return a 404 status code if the group does not exist", async () => {
         const memberName = "Alice";
-        req.params.member = memberName;
+        req.params.name = memberName;
         mockDeleteMemberFromGroup.execute.mockImplementation(() => {
             throw new GroupNotFoundError();
         });
@@ -55,7 +55,7 @@ describe("MemberController", () => {
 
     it("should return a 404 status code if the member does not belong to the group", async () => {
         const memberName = "Alice";
-        req.params.member = memberName;
+        req.params.name = memberName;
         mockDeleteMemberFromGroup.execute.mockImplementation(() => {
             throw new MemberNotFoundError();
         });
