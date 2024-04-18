@@ -33,4 +33,22 @@ describe('API Server Tests', () => {
     expect(mockGroupController.createGroup).toHaveBeenCalled();
   });
 
+  it('should route DELETE /group to the deleteGroup method of GroupController', async () => {
+    // Arrange
+    apiServer = new ApiServer(mockGroupController);
+    mockGroupController.deleteGroup.mockImplementation(async (req, res) => {
+      res.status(200).send({ message: 'Group deleted' });
+    });
+
+    // Act
+    const response = await request(apiServer.getApp())
+      .delete(RoutePaths.deleteGroup)
+      .send({ id: '123' });
+
+    // Assert
+    expect(response.status).toBe(200);
+    expect(response.body).toEqual({ message: 'Group deleted' });
+    expect(mockGroupController.deleteGroup).toHaveBeenCalled();
+  });
+
 });
