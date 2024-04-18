@@ -48,4 +48,9 @@ export class Group {
         const balances = this.balanceManager.getBalances();
         return balances[memberOne] && balances[memberOne][memberTwo];
     }
+
+    getSimplifiedBalance(memberOne: string, memberTwo: string): number {
+        const simplifiedBalances = this.balanceManager.getSimplifiedBalances();
+        return simplifiedBalances[memberOne] && simplifiedBalances[memberOne][memberTwo];
+    }
 }
