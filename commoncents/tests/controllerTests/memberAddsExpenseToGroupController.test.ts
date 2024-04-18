@@ -117,5 +117,33 @@ describe("ExpenseController", () => {
     expect(res.status).toHaveBeenCalledWith(400);
     expect(res.json).toHaveBeenCalledWith({ error: "Error message" });
   });
+
+  it("should return 400 if group id is not provided", async () => {
+    req.params = {};
+    const title = "Dinner";
+    const amount = 50;
+    const payerName = "Alice";
+    const date = new Date();
+    const isPercentual = true;
+    const split = {
+      "Alice": 50,
+      "Bob": 50
+    };
+    req.body = {
+      title,
+      amount,
+      payerName,
+      date,
+      isPercentual,
+      split
+    };
+
+    // Act
+    await expenseController.addExpenseToGroup(req, res);
+
+    // Assert
+    expect(res.status).toHaveBeenCalledWith(400);
+    expect(res.json).toHaveBeenCalledWith({ error: "Group id is required" });
+  });
 });
 
