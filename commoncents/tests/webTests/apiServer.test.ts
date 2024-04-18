@@ -16,6 +16,7 @@ describe('API Server Tests', () => {
         } as any;
         mockMemberController = {
             addMemberToGroup: jest.fn(),
+            deleteMemberFromGroup: jest.fn(),
         } as any;
     });
 
@@ -81,4 +82,23 @@ describe('API Server Tests', () => {
         expect(response.body).toEqual({ success: true });
         expect(mockMemberController.addMemberToGroup).toHaveBeenCalled();
     });
+
+    it('should route DELETE /group/:id/member/:name to the removeMember method of MemberController', async () => {
+        // Arrange
+        apiServer = new ApiServer(mockGroupController, mockMemberController);
+        mockMemberController.deleteMemberFromGroup.mockImplementation(async (req, res) => {
+            res.status(200).send({ success: true });
+        });
+
+        // Act
+        const response = await request(apiServer.getApp())
+            .delete(RoutePaths.deleteMember)
+            .send({ name: 'Alice' });
+
+        // Assert
+        expect(response.status).toBe(200);
+        expect(response.body).toEqual({ success: true });
+        expect(mockMemberController.deleteMemberFromGroup).toHaveBeenCalled();
+    });
+
 });
