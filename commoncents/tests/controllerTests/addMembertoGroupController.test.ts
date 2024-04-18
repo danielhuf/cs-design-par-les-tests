@@ -39,7 +39,7 @@ describe("MemberController", () => {
         // Assert
         expect(mockAddMemberToGroup.execute).toHaveBeenCalledWith("123", "Alice");
         expect(res.status).toHaveBeenCalledWith(200);
-        expect(res.json).toHaveBeenCalledWith({ success: true });
+        expect(res.json).toHaveBeenCalledWith(group);
     });
 
     it("should return a 404 status code if the group does not exist", async () => {
