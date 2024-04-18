@@ -1,5 +1,6 @@
 import express, { Application } from 'express';
 import { GroupController } from './controllers/GroupController';
+import { RoutePaths } from './routes/routeConfig';
 
 export class ApiServer {
   private app: Application;
@@ -7,8 +8,8 @@ export class ApiServer {
   constructor(groupController: GroupController) {
     this.app = express();
     this.app.use(express.json());
-    this.app.post('/group', groupController.createGroup);
-    this.app.delete('/group/:id', groupController.deleteGroup);
+    this.app.post(RoutePaths.createGroup, groupController.createGroup);
+    this.app.delete(RoutePaths.deleteGroup, groupController.deleteGroup);
   }
 
   public getApp(): Application {
