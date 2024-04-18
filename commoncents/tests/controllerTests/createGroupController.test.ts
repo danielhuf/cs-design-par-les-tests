@@ -2,27 +2,29 @@ import { Request, Response } from "express";
 import { getMockReq, getMockRes } from "@jest-mock/express"
 import { GroupController } from "../../src/frameworks/web/controllers/GroupController";
 import { CreateGroup } from "../../src/usecases/CreateGroup";
-import { IGroupRepository } from "../../src/interfaces/repositories/IGroupRepository";
 import { Group } from "../../src/domain/entities/Group";
 import { Member } from "../../src/domain/entities/Member";
 import { DeleteGroup } from "../../src/usecases/DeleteGroup";
 
 describe("GroupController", () => {
-    let createGroupUseCase: CreateGroup;
+    let mockCreateGroup: jest.Mocked<CreateGroup>;
+    let mockDeleteGroup: jest.Mocked<DeleteGroup>;
     let groupController: GroupController;
     let mockReq: Request;
     let mockRes: Response;
     let clearMockRes: () => void;
 
     beforeEach(() => {
-        const mockGroupRepository: jest.Mocked<IGroupRepository> = {
-            addGroup: jest.fn(),
-            deleteGroup: jest.fn().mockReturnValue(true),
-            findGroup: jest.fn().mockReturnValue(undefined),
-        };
 
-        createGroupUseCase = new CreateGroup(mockGroupRepository);
-        groupController = new GroupController(createGroupUseCase, new DeleteGroup(mockGroupRepository));
+        mockCreateGroup = {
+            execute: jest.fn(),
+        } as any; // as any to avoid having to mock all methods of CreateGroup
+
+        mockDeleteGroup = {
+            execute: jest.fn(),
+        } as any;
+
+        groupController = new GroupController(mockCreateGroup, mockDeleteGroup);
         mockReq = getMockReq();
         let { res, mockClear } = getMockRes();
         mockRes = res;
@@ -43,10 +45,10 @@ describe("GroupController", () => {
             members: [{ name: "Alice" }, { name: "Bob" }]
         };
 
-        jest.spyOn(createGroupUseCase, "execute").mockReturnValue(
+        mockCreateGroup.execute.mockReturnValue(
             new Group("1", "Adventure Club", [
-            new Member("Alice"),
-            new Member("Bob"),
+                new Member("Alice"),
+                new Member("Bob")
             ])
         );
 
@@ -54,6 +56,7 @@ describe("GroupController", () => {
         await groupController.createGroup(mockReq, mockRes);
 
         // Assert
+        expect(mockCreateGroup.execute).toHaveBeenCalledWith("Adventure Club", [new Member("Alice"), new Member("Bob")]);
         expect(mockRes.status).toHaveBeenCalledWith(201);
         expect(mockRes.json).toHaveBeenCalledWith(expectedResponse);
     });
@@ -104,7 +107,7 @@ describe("GroupController", () => {
         members: []
         };
 
-        jest.spyOn(createGroupUseCase, "execute").mockReturnValue(
+        mockCreateGroup.execute.mockReturnValue(
             new Group("1", "Adventure Club", [])
         );
 
@@ -112,6 +115,7 @@ describe("GroupController", () => {
         await groupController.createGroup(mockReq, mockRes);
 
         // Assert
+        expect(mockCreateGroup.execute).toHaveBeenCalledWith("Adventure Club");
         expect(mockRes.status).toHaveBeenCalledWith(201);
         expect(mockRes.json).toHaveBeenCalledWith(expectedResponse);
     });
