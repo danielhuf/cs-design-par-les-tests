@@ -15,48 +15,48 @@ describe('API Server Tests', () => {
             deleteGroup: jest.fn(),
         } as any;
         mockMemberController = {
-            addMember: jest.fn(),
+            addMemberToGroup: jest.fn(),
         } as any;
     });
 
 
     it('should route POST /group to the createGroup method of GroupController', async () => {
         // Arrange
-        apiServer = new ApiServer(mockGroupController);
+        apiServer = new ApiServer(mockGroupController, mockMemberController);
         mockGroupController.createGroup.mockImplementation(async (req, res) => {
-        res.status(201).send({
-            id: "group-id",
-            name: "New Group",
-            members: ['Alice', 'Bob']
-        });
+            res.status(201).send({
+                id: "group-id",
+                name: "New Group",
+                members: ['Alice', 'Bob']
+            });
         });
 
         // Act
         const response = await request(apiServer.getApp())
-        .post(RoutePaths.createGroup)
-        .send({ name: 'New Group', members: ['Alice', 'Bob'] });
+            .post(RoutePaths.createGroup)
+            .send({ name: 'New Group', members: ['Alice', 'Bob'] });
 
         // Assert
         expect(response.status).toBe(201);
         expect(response.body).toEqual({
-        id: "group-id",
-        name: "New Group",
-        members: ['Alice', 'Bob']
+            id: "group-id",
+            name: "New Group",
+            members: ['Alice', 'Bob']
         });
         expect(mockGroupController.createGroup).toHaveBeenCalled();
     });
 
     it('should route DELETE /group to the deleteGroup method of GroupController', async () => {
         // Arrange
-        apiServer = new ApiServer(mockGroupController);
+        apiServer = new ApiServer(mockGroupController, mockMemberController);
         mockGroupController.deleteGroup.mockImplementation(async (req, res) => {
-        res.status(200).send({ success: true });
+         res.status(200).send({ success: true });
         });
 
         // Act
         const response = await request(apiServer.getApp())
-        .delete(RoutePaths.deleteGroup)
-        .send({ id: '123' });
+            .delete(RoutePaths.deleteGroup)
+            .send({ id: '123' });
 
         // Assert
         expect(response.status).toBe(200);
@@ -73,8 +73,8 @@ describe('API Server Tests', () => {
 
         // Act
         const response = await request(apiServer.getApp())
-        .post(RoutePaths.addMember)
-        .send({ name: 'Alice' });
+            .post(RoutePaths.addMember)
+            .send({ name: 'Alice' });
 
         // Assert
         expect(response.status).toBe(201);
