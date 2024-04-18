@@ -4,9 +4,11 @@ import { PayOff } from "../entities/PayOff";
 
 export class DifferentialBalanceManager {
     private balances: { [key: string]: { [key: string]: number } };
+    private simplfiedBalances: { [key: string]: { [key: string]: number } };
 
     constructor(private members: Member[]) {
         this.balances = {};
+        this.simplfiedBalances = {};
         this.initializeBalances();
     }
 
@@ -97,5 +99,9 @@ export class DifferentialBalanceManager {
 
     getBalances(): { [key: string]: { [key: string]: number } } {
         return this.balances;
+    }
+
+    getSimplifiedBalances(): { [key: string]: { [key: string]: number } } {
+        return this.simplfiedBalances;
     }
 }
