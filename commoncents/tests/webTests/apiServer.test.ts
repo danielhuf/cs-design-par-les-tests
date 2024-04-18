@@ -19,7 +19,11 @@ describe('API Server Tests', () => {
     // Arrange
     apiServer = new ApiServer(mockGroupController);
     mockGroupController.createGroup.mockImplementation(async (req, res) => {
-      res.status(201).send({ message: 'Group created' });
+      res.status(201).send({
+        id: "group-id",
+        name: "New Group",
+        members: ['Alice', 'Bob']
+      });
     });
 
     // Act
@@ -29,7 +33,11 @@ describe('API Server Tests', () => {
 
     // Assert
     expect(response.status).toBe(201);
-    expect(response.body).toEqual({ message: 'Group created' });
+    expect(response.body).toEqual({
+      id: "group-id",
+      name: "New Group",
+      members: ['Alice', 'Bob']
+    });
     expect(mockGroupController.createGroup).toHaveBeenCalled();
   });
 
@@ -37,7 +45,7 @@ describe('API Server Tests', () => {
     // Arrange
     apiServer = new ApiServer(mockGroupController);
     mockGroupController.deleteGroup.mockImplementation(async (req, res) => {
-      res.status(200).send({ message: 'Group deleted' });
+      res.status(200).send({ success: true });
     });
 
     // Act
@@ -47,7 +55,7 @@ describe('API Server Tests', () => {
 
     // Assert
     expect(response.status).toBe(200);
-    expect(response.body).toEqual({ message: 'Group deleted' });
+    expect(response.body).toEqual({ success: true });
     expect(mockGroupController.deleteGroup).toHaveBeenCalled();
   });
 
