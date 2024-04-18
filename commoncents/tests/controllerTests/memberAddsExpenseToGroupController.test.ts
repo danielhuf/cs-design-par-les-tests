@@ -145,5 +145,187 @@ describe("ExpenseController", () => {
     expect(res.status).toHaveBeenCalledWith(400);
     expect(res.json).toHaveBeenCalledWith({ error: "Group id is required" });
   });
+
+  it("should return 400 if no body is provided", async () => {
+    req.body = undefined;
+
+    // Act
+    await expenseController.addExpenseToGroup(req, res);
+
+    // Assert
+    expect(res.status).toHaveBeenCalledWith(400);
+    expect(res.json).toHaveBeenCalledWith({ error: "Invalid request" });
+  });
+
+  it("should return 400 if title is not provided", async () => {
+    const amount = 50;
+    const payerName = "Alice";
+    const date = new Date();
+    const isPercentual = true;
+    const split = {
+      "Alice": 50,
+      "Bob": 50
+    };
+    req.body = {
+      amount,
+      payerName,
+      date,
+      isPercentual,
+      split
+    };
+
+    // Act
+    await expenseController.addExpenseToGroup(req, res);
+
+    // Assert
+    expect(res.status).toHaveBeenCalledWith(400);
+    expect(res.json).toHaveBeenCalledWith({ error: "Expense title is required" });
+  });
+
+  it("should return 400 if amount is not provided", async () => {
+    const title = "Dinner";
+    const payerName = "Alice";
+    const date = new Date();
+    const isPercentual = true;
+    const split = {
+      "Alice": 50,
+      "Bob": 50
+    };
+    req.body = {
+      title,
+      payerName,
+      date,
+      isPercentual,
+      split
+    };
+
+    // Act
+    await expenseController.addExpenseToGroup(req, res);
+
+    // Assert
+    expect(res.status).toHaveBeenCalledWith(400);
+    expect(res.json).toHaveBeenCalledWith({ error: "Expense amount is required" });
+  });
+
+  it("should return 400 if payer name is not provided", async () => {
+    const title = "Dinner";
+    const amount = 50;
+    const date = new Date();
+    const isPercentual = true;
+    const split = {
+      "Alice": 50,
+      "Bob": 50
+    };
+    req.body = {
+      title,
+      amount,
+      date,
+      isPercentual,
+      split
+    };
+
+    // Act
+    await expenseController.addExpenseToGroup(req, res);
+
+    // Assert
+    expect(res.status).toHaveBeenCalledWith(400);
+    expect(res.json).toHaveBeenCalledWith({ error: "Payer name is required" });
+  });
+
+  it("should return 400 if date is not provided", async () => {
+    const title = "Dinner";
+    const amount = 50;
+    const payerName = "Alice";
+    const isPercentual = true;
+    const split = {
+      "Alice": 50,
+      "Bob": 50
+    };
+    req.body = {
+      title,
+      amount,
+      payerName,
+      isPercentual,
+      split
+    };
+
+    // Act
+    await expenseController.addExpenseToGroup(req, res);
+
+    // Assert
+    expect(res.status).toHaveBeenCalledWith(400);
+    expect(res.json).toHaveBeenCalledWith({ error: "Expense date is required" });
+  });
+
+  it("should return 400 if isPercentual is not provided", async () => {
+    const title = "Dinner";
+    const amount = 50;
+    const payerName = "Alice";
+    const date = new Date();
+    const split = {
+      "Alice": 50,
+      "Bob": 50
+    };
+    req.body = {
+      title,
+      amount,
+      payerName,
+      date,
+      split
+    };
+
+    // Act
+    await expenseController.addExpenseToGroup(req, res);
+
+    // Assert
+    expect(res.status).toHaveBeenCalledWith(400);
+    expect(res.json).toHaveBeenCalledWith({ error: "isPercentual is required" });
+  });
+
+  it("should return 400 if split is not provided", async () => {
+    const title = "Dinner";
+    const amount = 50;
+    const payerName = "Alice";
+    const date = new Date();
+    const isPercentual = true;
+    req.body = {
+      title,
+      amount,
+      payerName,
+      date,
+      isPercentual
+    };
+
+    // Act
+    await expenseController.addExpenseToGroup(req, res);
+
+    // Assert
+    expect(res.status).toHaveBeenCalledWith(400);
+    expect(res.json).toHaveBeenCalledWith({ error: "Expense split is required" });
+  });
+
+  it("should return 400 if split is not an object", async () => {
+    const title = "Dinner";
+    const amount = 50;
+    const payerName = "Alice";
+    const date = new Date();
+    const isPercentual = true;
+    const split = "Alice";
+    req.body = {
+      title,
+      amount,
+      payerName,
+      date,
+      isPercentual,
+      split
+    };
+
+    // Act
+    await expenseController.addExpenseToGroup(req, res);
+
+    // Assert
+    expect(res.status).toHaveBeenCalledWith(400);
+    expect(res.json).toHaveBeenCalledWith({ error: "Expense split must be an object" });
+  });
 });
 
