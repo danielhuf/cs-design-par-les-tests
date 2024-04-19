@@ -192,4 +192,56 @@ program
 
   });
 
+  program
+  .command('add-payOff')
+  .description('Add a pay off to a group')
+  .action(async () => {
+    const answers = await inquirer.prompt([
+      {
+        type: 'input',
+        name: 'groupId',
+        message: 'What is the group ID?',
+      },
+      {
+        type: 'input',
+        name: 'title',
+        message: 'What is the title of the pay off?',
+      },
+      {
+        type: 'input',
+        name: 'amount',
+        message: 'What is the amount of the pay off?',
+      },
+      {
+        type: 'input',
+        name: 'payerName',
+        message: 'Who is paying the debt?',
+      },
+      {
+        type: 'input',
+        name: 'date',
+        message: 'What is the date of the pay off? (YYYY-MM-DD)',
+      },
+      {
+        type: 'input',
+        name: 'payTo',
+        message: 'To who is the debt payed?',
+      }
+    ]);
+    const response = await fetch(`http://localhost:5000/group/${answers.groupId}/expense`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        title: answers.title, 
+        amount: parseFloat(answers.amount), 
+        payerName: answers.payerName, 
+        date: answers.date, 
+        payTo: answers.payTo}),
+    });
+
+    const data = await response.json();
+    console.log(data);
+
+  });
+
 program.parse(process.argv);

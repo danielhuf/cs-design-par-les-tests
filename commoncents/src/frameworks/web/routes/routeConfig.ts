@@ -3,5 +3,6 @@ export const RoutePaths = {
   deleteGroup: '/group/:id',
   addMember: '/group/:id/member',
   deleteMember: '/group/:id/member/:name',
-  addExpense: '/group/:id/expense'
+  addExpense: '/group/:id/expense',
+  addPayOff: '/group/:id/payoff',
 };
