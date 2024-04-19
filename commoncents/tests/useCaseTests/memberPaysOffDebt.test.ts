@@ -98,6 +98,34 @@ describe("Member Pays Off Expense To Other Memeber In Group Use Case", () => {
       expect(group.getDifferentialBalance("Alice", "Bob")).toBe(10);
       expect(group.getDifferentialBalance("Bob", "Alice")).toBe(-10);
     });
+
+    it("should update differential balances correctly after adding a pay off greater than the debt", () => {
+      const groupName = "Trip";
+      const members = [new Member("Alice"), new Member("Bob")];
+      const group = createGroup.execute(groupName, members);
+  
+      const title = "Lunch";
+      const amount = 100;
+      const payerName = "Alice";
+      const date = new Date();
+      const isPercentual = false;
+      const split = {
+        "Alice": 60,
+        "Bob": 40
+      };
+
+      const titlePayOff = "Lunch pay off";
+      const amountPayOff = 50;
+      const payerNamePayOff = "Bob";
+      const payTo = "Alice";
+      const datePayOff = new Date();
+  
+      memberAddsExpenseToGroup.execute(group.id, title, amount, payerName, date, isPercentual, split);
+      memberPaysOffDebt.execute(group.id, titlePayOff, payTo, amountPayOff, payerNamePayOff, datePayOff)
+
+      expect(group.getDifferentialBalance("Alice", "Bob")).toBe(-10);
+      expect(group.getDifferentialBalance("Bob", "Alice")).toBe(10);
+    });
   });
 
   describe("Error handling", () => { 
