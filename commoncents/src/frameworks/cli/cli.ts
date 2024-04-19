@@ -228,7 +228,7 @@ program
         message: 'To who is the debt payed?',
       }
     ]);
-    const response = await fetch(`http://localhost:5000/group/${answers.groupId}/expense`, {
+    const response = await fetch(`http://localhost:5000/group/${answers.groupId}/payOff`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
