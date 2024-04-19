@@ -1,6 +1,6 @@
 import { Request, Response } from "express";
 import { GroupNotFoundError } from "../../../domain/errors/GroupErrors";
-import { MemberPaysOffDebt } from "../../../usecases/MemberPaysOffDebt";
+import { MemberPaysOffDebt } from "../../../usecases/PayOffDebt";
 export class PayOffController {
   private memberPaysOffDebtUseCase: MemberPaysOffDebt;
 

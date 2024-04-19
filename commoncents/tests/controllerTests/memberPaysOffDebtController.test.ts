@@ -3,7 +3,7 @@ import { getMockReq, getMockRes } from "@jest-mock/express"
 import { Group } from "../../src/domain/entities/Group";
 import { Member } from "../../src/domain/entities/Member";
 import { GroupNotFoundError } from "../../src/domain/errors/GroupErrors";
-import { MemberPaysOffDebt } from "../../src/usecases/MemberPaysOffDebt";
+import { MemberPaysOffDebt } from "../../src/usecases/PayOffDebt";
 import { PayOffController } from "../../src/frameworks/web/controllers/PayOffController";
 
 describe("PayOffController", () => {
