@@ -48,6 +48,7 @@ export class DifferentialBalanceManager {
         } else if (expense instanceof PayOff) {
             this.updateBalancesForPayOff(expense);
         }
+        this.updateSimplifiedBalances();
     }
 
     private updateBalancesForExpense(expense: Expense): void {

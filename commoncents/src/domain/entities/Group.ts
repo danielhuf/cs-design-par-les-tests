@@ -39,7 +39,6 @@ export class Group {
         this.expenses.push(expense);
         this.calculateTotalBalance();
         this.balanceManager.updateBalances(expense);
-        this.balanceManager.updateSimplifiedBalances(expense);
     }
 
     payOffDebt(payOff: PayOff): void {
