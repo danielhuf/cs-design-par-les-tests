@@ -2,6 +2,7 @@ import { Expense } from "./Expense";
 import { Member } from "./Member";
 import { MemberNotFoundError } from "../errors/GroupErrors";
 import { DifferentialBalanceManager } from "../services/DifferentialBalanceManager";
+import { PayOff } from "./PayOff";
 
 export class Group {
     id: string;
@@ -38,6 +39,10 @@ export class Group {
         this.expenses.push(expense);
         this.calculateTotalBalance();
         this.balanceManager.updateBalances(expense);
+    }
+
+    payOffDebt(payOff: PayOff): void {
+        this.balanceManager.updateBalances(payOff);
     }
 
     calculateTotalBalance(): void {

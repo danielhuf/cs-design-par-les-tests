@@ -1,5 +1,6 @@
 import { Member } from "../entities/Member";
 import { Expense } from "../entities/Expense";
+import { PayOff } from "../entities/PayOff";
 
 export class DifferentialBalanceManager {
     private balances: { [key: string]: { [key: string]: number } };
@@ -27,28 +28,54 @@ export class DifferentialBalanceManager {
         });
     }
 
-    updateBalances(expense: Expense): void {
+    updateBalances(expense: Expense | PayOff): void {
+        if (expense instanceof Expense) {
+            this.updateBalancesForExpense(expense);
+        } else if (expense instanceof PayOff) {
+            this.updateBalancesForPayOff(expense);
+        }
+    }
+
+    private updateBalancesForExpense(expense: Expense): void {
         const totalAmount = expense.amount;
         let expectedShares: { [key: string]: number } = {};
 
         if (expense.isPercentual) {
-            // If the split is in percentages, calculate the actual amount for each member
-            for (const [member, percent] of Object.entries(expense.split)) {
-                expectedShares[member] = totalAmount * (percent as number) / 100;
-            }
+            expectedShares = this.calculatePercentualShares(expense.split, totalAmount);
         } else {
-            // If the split is direct values, use those values as expected shares
-            expectedShares = {...expense.split} as { [key: string]: number };
+            expectedShares = { ...expense.split };
         }
 
-        // Iterate over each member's expected share and update the differential balances
         for (const [member, share] of Object.entries(expectedShares)) {
             if (member !== expense.payerName) {
                 const amountOwedByMember = share;
-                this.balances[expense.payerName][member] = (this.balances[expense.payerName][member] || 0) + amountOwedByMember;
-                this.balances[member][expense.payerName] = (this.balances[member][expense.payerName] || 0) - amountOwedByMember;
+                this.updateDifferentialBalance(expense.payerName, member, amountOwedByMember);
+                this.updateDifferentialBalance(member, expense.payerName, -amountOwedByMember);
             }
         }
+    }
+
+    private calculatePercentualShares(split: { [key: string]: number }, totalAmount: number): { [key: string]: number } {
+        const expectedShares: { [key: string]: number } = {};
+
+        for (const [member, percent] of Object.entries(split)) {
+            expectedShares[member] = totalAmount * (percent as number) / 100;
+        }
+
+        return expectedShares;
+    }
+
+    private updateDifferentialBalance(payer: string, payee: string, amount: number): void {
+        this.balances[payer][payee] = (this.balances[payer][payee] || 0) + amount;
+    }
+
+    private updateBalancesForPayOff(payoff: PayOff): void {
+        const amount = payoff.amount;
+        const payer = payoff.payerName;
+        const payee = payoff.payTo;
+
+        this.updateDifferentialBalance(payer, payee, amount);
+        this.updateDifferentialBalance(payee, payer, -amount);
     }
 
     addMember(member: Member): void {
