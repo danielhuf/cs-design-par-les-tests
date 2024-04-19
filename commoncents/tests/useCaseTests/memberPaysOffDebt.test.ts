@@ -123,7 +123,7 @@ describe("Member Pays Off Expense To Other Memeber In Group Use Case", () => {
       const payTo = "Bob";
       const date = new Date();
   
-      expect(() => memberPaysOffDebt.execute(group.id, emptyTitle, payTo, amount, payerName, date)).toThrow("Expense title cannot be empty");
+      expect(() => memberPaysOffDebt.execute(group.id, emptyTitle, payTo, amount, payerName, date)).toThrow("Pay off title cannot be empty");
     });
   
     it("should throw an error if the amount is negative", () => {
@@ -137,7 +137,7 @@ describe("Member Pays Off Expense To Other Memeber In Group Use Case", () => {
       const payTo = "Bob";
       const date = new Date();
   
-      expect(() => memberPaysOffDebt.execute(group.id, title, payTo, negativeAmount, payerName, date)).toThrow("Expense amount cannot be negative");
+      expect(() => memberPaysOffDebt.execute(group.id, title, payTo, negativeAmount, payerName, date)).toThrow("Pay off amount cannot be negative");
     });
   
     it("should throw an error if the amount is zero", () => {
@@ -151,7 +151,7 @@ describe("Member Pays Off Expense To Other Memeber In Group Use Case", () => {
       const payTo = "Bob";
       const date = new Date();
   
-      expect(() => memberPaysOffDebt.execute(group.id, title, payTo, zeroAmount, payerName, date)).toThrow("Expense amount cannot be zero");
+      expect(() => memberPaysOffDebt.execute(group.id, title, payTo, zeroAmount, payerName, date)).toThrow("Pay off amount cannot be zero");
     });
   
     it("should throw an error if the group has no members", () => {
@@ -192,7 +192,7 @@ describe("Member Pays Off Expense To Other Memeber In Group Use Case", () => {
       const payTo = "Charlie";
       const date = new Date();
   
-      expect(() => memberPaysOffDebt.execute(group.id, title, payTo, amount, payerName, date)).toThrow("Split members are not members of the group");
+      expect(() => memberPaysOffDebt.execute(group.id, title, payTo, amount, payerName, date)).toThrow("Payee is not a member of the group");
     });
   
     it("should throw an error if the date is in the future", () => {
@@ -207,7 +207,7 @@ describe("Member Pays Off Expense To Other Memeber In Group Use Case", () => {
       const date = new Date();
       date.setDate(date.getDate() + 1);
   
-      expect(() => memberPaysOffDebt.execute(group.id, title, payTo, amount, payerName, date)).toThrow("Expense date cannot be in the future");
+      expect(() => memberPaysOffDebt.execute(group.id, title, payTo, amount, payerName, date)).toThrow("Pay off date cannot be in the future");
     });
   });
 });
