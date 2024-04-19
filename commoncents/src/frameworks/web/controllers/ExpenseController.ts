@@ -1,5 +1,5 @@
 import { Request, Response } from "express";
-import { MemberAddsExpenseToGroup } from "../../../usecases/MemberAddsExpenseToGroup";
+import { MemberAddsExpenseToGroup } from "../../../usecases/AddExpenseToGroup";
 import { GroupNotFoundError } from "../../../domain/errors/GroupErrors";
 export class ExpenseController {
   private memberAddsExpenseToGroupUseCase: MemberAddsExpenseToGroup;

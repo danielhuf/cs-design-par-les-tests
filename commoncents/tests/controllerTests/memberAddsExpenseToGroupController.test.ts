@@ -1,7 +1,7 @@
 import { Request, Response } from "express";
 import { getMockReq, getMockRes } from "@jest-mock/express"
 import { ExpenseController } from "../../src/frameworks/web/controllers/ExpenseController";
-import { MemberAddsExpenseToGroup } from "../../src/usecases/MemberAddsExpenseToGroup";
+import { MemberAddsExpenseToGroup } from "../../src/usecases/AddExpenseToGroup";
 import { Group } from "../../src/domain/entities/Group";
 import { Member } from "../../src/domain/entities/Member";
 import { GroupNotFoundError } from "../../src/domain/errors/GroupErrors";
