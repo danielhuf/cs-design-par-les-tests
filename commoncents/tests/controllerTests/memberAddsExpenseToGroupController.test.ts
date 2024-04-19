@@ -52,7 +52,7 @@ describe("ExpenseController", () => {
     // Assert
     expect(mockAddExpenseToGroup.execute).toHaveBeenCalledWith("123", title, amount, payerName, date, isPercentual, split);
     expect(res.status).toHaveBeenCalledWith(200);
-    expect(res.json).toHaveBeenCalledWith({ success: true });
+    expect(res.json).toHaveBeenCalledWith(group);
   });
 
   it("should return an error response if the group does not exist", async () => {

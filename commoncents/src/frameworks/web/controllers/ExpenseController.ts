@@ -19,7 +19,8 @@ export class ExpenseController {
     }
     const { title, amount, payerName, date, isPercentual, split } = req.body;
     try {
-      this.memberAddsExpenseToGroupUseCase.execute(id, title, amount, payerName, date, isPercentual, split);
+      const group = this.memberAddsExpenseToGroupUseCase.execute(id, title, amount, payerName, date, isPercentual, split);
+      res.status(200).json(group);
     } catch (error) {
       if (error instanceof GroupNotFoundError) {
         res.status(404).json({ error: "Group not found" });
@@ -31,7 +32,6 @@ export class ExpenseController {
         }
       }
     }
-    res.status(200).json({ success: true });
   }
 
   private validateExpenseRequestBody(req: Request, res: Response): boolean {
@@ -57,7 +57,7 @@ export class ExpenseController {
     if (!date) {
       missingFields.push("date");
     }
-    if (!isPercentual) {
+    if (isPercentual === undefined) {
       missingFields.push("isPercentual");
     }
     if (!split) {

@@ -25,8 +25,8 @@ export class MemberController {
       return;
     }
     try {
-      await this.addMemberToGroupUseCase.execute(id, name);
-      res.status(200).json({ success: true });
+      const group = await this.addMemberToGroupUseCase.execute(id, name);
+      res.status(200).json(group);
     } catch (error) {
       if (error instanceof GroupNotFoundError) {
         res.status(404).json({ message: "Group not found" });
@@ -35,18 +35,18 @@ export class MemberController {
   }
 
   public async deleteMemberFromGroup(req: Request, res: Response): Promise<void> {
-    const { id, member } = req.params;
+    const { id, name } = req.params;
     if (!id) {
       res.status(400).json({ message: "Group id is required" });
       return;
     }
-    if (!member) {
+    if (!name) {
       res.status(400).json({ message: "Member name is required" });
       return;
     }
     try {
-      await this.deleteMemberFromGroupUseCase.execute(id, member);
-      res.status(200).json({ message: `Successfully deleted ${member} from group` });
+      await this.deleteMemberFromGroupUseCase.execute(id, name);
+      res.status(200).json({ message: `Successfully deleted ${name} from group` });
     } catch (error) {
       if (error instanceof GroupNotFoundError) {
         res.status(404).json({ message: "Group not found" });
