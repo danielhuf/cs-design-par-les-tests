@@ -1,11 +1,11 @@
-import { MemberAddsExpenseToGroup } from "../../src/usecases/MemberAddsExpenseToGroup";
+import { MemberAddsExpenseToGroup } from "../../src/usecases/AddExpenseToGroup";
 import { GroupRepository } from "../../src/frameworks/persistence/GroupRepository";
 import { CreateGroup } from "../../src/usecases/CreateGroup";
 import { resetMockDatabase } from "../../src/frameworks/persistence/mockDatabase";
 import { Member } from "../../src/domain/entities/Member";
 import { GroupNotFoundError } from "../../src/domain/errors/GroupErrors";
 import { AddMemberToGroup } from "../../src/usecases/AddMemberToGroup";
-import { MemberPaysOffDebt } from "../../src/usecases/MemberPaysOffDebt";
+import { MemberPaysOffDebt } from "../../src/usecases/PayOffDebt";
 import { PayOff } from "../../src/domain/entities/PayOff";
 
 describe("Member Pays Off Expense To Other Memeber In Group Use Case", () => {

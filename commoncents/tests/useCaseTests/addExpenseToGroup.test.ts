@@ -1,4 +1,4 @@
-import { MemberAddsExpenseToGroup } from "../../src/usecases/MemberAddsExpenseToGroup";
+import { MemberAddsExpenseToGroup } from "../../src/usecases/AddExpenseToGroup";
 import { GroupRepository } from "../../src/frameworks/persistence/GroupRepository";
 import { CreateGroup } from "../../src/usecases/CreateGroup";
 import { resetMockDatabase } from "../../src/frameworks/persistence/mockDatabase";
