@@ -9,8 +9,8 @@ import { GroupController } from "./frameworks/web/controllers/GroupController"
 import { MemberController } from "./frameworks/web/controllers/MemberController"
 import { ExpenseController } from "./frameworks/web/controllers/ExpenseController"
 import { ApiServer } from "./frameworks/web/ApiServer"
-import { MemberPaysOffDebt } from "./usecases/MemberPaysOffDebt"
 import { PayOffController } from "./frameworks/web/controllers/PayOffController"
+import { MemberPaysOffDebt } from "./usecases/PayOffDebt"
 
 
 export async function startServer(): Promise<void> {
