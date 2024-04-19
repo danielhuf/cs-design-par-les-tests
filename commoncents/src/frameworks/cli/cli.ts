@@ -1,8 +1,11 @@
 import { program } from 'commander';
 import inquirer from 'inquirer';
 import fetch from 'node-fetch';
+import figlet from 'figlet';
 
 program.version('0.1.0');
+console.log(figlet.textSync("CommonCent$"));
+
 
 program
   .command('create-group')
