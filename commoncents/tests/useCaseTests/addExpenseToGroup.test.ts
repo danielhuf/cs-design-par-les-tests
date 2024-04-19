@@ -5,6 +5,7 @@ import { resetMockDatabase } from "../../src/frameworks/persistence/mockDatabase
 import { Member } from "../../src/domain/entities/Member";
 import { GroupNotFoundError } from "../../src/domain/errors/GroupErrors";
 import { AddMemberToGroup } from "../../src/usecases/AddMemberToGroup";
+import e from "express";
 
 describe("Member Adds Expense To Group Use Case", () => {
 
@@ -48,7 +49,7 @@ describe("Member Adds Expense To Group Use Case", () => {
       expect(group.expenses[0].split).toEqual(split);
     });
   
-    it("should add a expense to a group with value splt", () => {
+    it("should add a expense to a group with value split", () => {
       const groupName = "Holiday Trip";
       const members = [new Member("Alice"), new Member("Bob")];
       const group = createGroup.execute(groupName, members);
@@ -377,6 +378,127 @@ describe("Member Adds Expense To Group Use Case", () => {
       expect(group.getDifferentialBalance("Bob", "Charlie")).toBe(0);
       expect(group.getDifferentialBalance("Charlie", "Bob")).toBe(0);
     });
+  });
+
+  describe("Simplified balance calculations", () => {
+    it("simplified balance should be equal to diffirential balance if the group has only two members", () => {
+      const groupName = "Trip";
+      const members = [new Member("Alice"), new Member("Bob")];
+      const group = createGroup.execute(groupName, members);
+
+      const title1 = "Lunch";
+      const amount1 = 20;
+      const payerName1 = "Alice";
+      const date1 = new Date();
+      const isPercentual1 = true;
+      const split1 = {
+        "Alice": 80,
+        "Bob": 20
+      };
+
+      const title2 = "Dinner";
+      const amount2 = 50;
+      const payerName2 = "Bob";
+      const date2 = new Date();
+      const isPercentual2 = false;
+      const split2 = {
+        "Alice": 30,
+        "Bob": 20
+      };
+
+      memberAddsExpenseToGroup.execute(group.id, title1, amount1, payerName1, date1, isPercentual1, split1);
+      memberAddsExpenseToGroup.execute(group.id, title2, amount2, payerName2, date2, isPercentual2, split2);
+
+      expect(group.getSimplifiedBalance("Alice", "Bob")).toBe(-26);
+      expect(group.getSimplifiedBalance("Bob", "Alice")).toBe(26);
+    });
+
+    it("should update simplified balances correctly after adding an simplifyable expense", () => {
+      const groupName = "Trip";
+      const members = [new Member("Alice"), new Member("Bob"), new Member("Charlie")];
+      const group = createGroup.execute(groupName, members);
+
+      // Bob owes Alice 30
+      const title1 = "Lunch";
+      const amount1 = 50;
+      const payerName1 = "Alice";
+      const date1 = new Date();
+      const isPercentual1 = false;
+      const split1 = {
+        "Alice": 20,
+        "Bob": 30
+      };
+
+      // Alice owes Charlie 30
+      const title2 = "Dinner";
+      const amount2 = 50;
+      const payerName2 = "Charlie";
+      const date2 = new Date();
+      const isPercentual2 = false;
+      const split2 = {
+        "Charlie": 20,
+        "Alice": 30
+      };
+
+      memberAddsExpenseToGroup.execute(group.id, title1, amount1, payerName1, date1, isPercentual1, split1);
+      expect(group.getDifferentialBalance("Alice", "Bob")).toBe(30);
+
+      memberAddsExpenseToGroup.execute(group.id, title2, amount2, payerName2, date2, isPercentual2, split2);
+      expect(group.getDifferentialBalance("Charlie", "Alice")).toBe(30);
+
+      expect(group.getSimplifiedBalance("Alice", "Bob")).toBe(0);
+      expect(group.getSimplifiedBalance("Charlie", "Alice")).toBe(0);
+      expect(group.getSimplifiedBalance("Charlie", "Bob")).toBe(30);
+
+    });
+
+    it("should simplify to 0 if there is a circular debt", () => {
+      const groupName = "Trip";
+      const members = [new Member("Alice"), new Member("Bob"), new Member("Charlie")];
+      const group = createGroup.execute(groupName, members);
+
+      // Bob owes Alice 30
+      const title1 = "Lunch";
+      const amount1 = 50;
+      const payerName1 = "Alice";
+      const date1 = new Date();
+      const isPercentual1 = false;
+      const split1 = {
+        "Alice": 20,
+        "Bob": 30
+      };
+
+      // Charlie owes Bob 30
+      const title2 = "Dinner";
+      const amount2 = 50;
+      const payerName2 = "Bob";
+      const date2 = new Date();
+      const isPercentual2 = false;
+      const split2 = {
+        "Bob": 20,
+        "Charlie": 30
+      };
+
+      // Alice owes Charlie 30
+      const title3 = "Breakfast";
+      const amount3 = 50;
+      const payerName3 = "Charlie";
+      const date3 = new Date();
+      const isPercentual3 = false;
+      const split3 = {
+        "Charlie": 20,
+        "Alice": 30
+      };
+
+      memberAddsExpenseToGroup.execute(group.id, title1, amount1, payerName1, date1, isPercentual1, split1);
+      memberAddsExpenseToGroup.execute(group.id, title2, amount2, payerName2, date2, isPercentual2, split2);
+      memberAddsExpenseToGroup.execute(group.id, title3, amount3, payerName3, date3, isPercentual3, split3);
+
+      expect(group.getSimplifiedBalance("Alice", "Bob")).toBe(0);
+      expect(group.getSimplifiedBalance("Charlie", "Alice")).toBe(0);
+      expect(group.getSimplifiedBalance("Charlie", "Bob")).toBe(0);
+    });
+
   });
 
   describe("Error handling", () => { 
